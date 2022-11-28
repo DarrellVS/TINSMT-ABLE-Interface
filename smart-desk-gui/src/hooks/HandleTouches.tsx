@@ -26,8 +26,6 @@ export default function useHandleTouches(
 
   useEffect(() => {
     const precision = options?.precision || 10;
-    console.log(mouseDownPosition, currentMousePos);
-
     if (
       Math.abs(mouseDownPosition.x - currentMousePos.x) > precision ||
       Math.abs(mouseDownPosition.y - currentMousePos.y) > precision
