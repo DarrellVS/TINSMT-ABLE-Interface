@@ -5,18 +5,18 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import useGeoLocation from "../hooks/useGeoLocation";
 import {
   Forecast,
   LocalData,
   OpenWeatherMap,
-  WeatherContextType,
 } from "../interfaces/OpenWeatherMap";
 
 interface Props {
   children: React.ReactNode;
 }
 
-const WeatherContext = createContext<WeatherContextType>({});
+const WeatherContext = createContext<Weather>({});
 
 interface DefaultFetcherOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE";
@@ -45,39 +45,51 @@ function fetcher<T>(url: string, options: DefaultFetcherOptions): Promise<T> {
   }).then((res) => res.json());
 }
 
+interface Weather {
+  localData?: LocalData;
+  forecast?: Forecast;
+  isLoading?: boolean;
+  error?: string;
+}
+
 export default function WeatherContextProvider({ children }: Props) {
-  const [forecast, setForecast] = useState<Forecast>();
-  const [localData, setLocalData] = useState<LocalData>();
-  const [error, setError] = useState();
-  const [isLoading, setIsLoading] = useState(true);
   const [interval, setIntervalState] = useState<NodeJS.Timer>();
+  const [weather, setWeather] = useState<Weather>({
+    isLoading: true,
+  });
+  const location = useGeoLocation();
 
   const getWeather = useCallback(() => {
+    if (!location) return;
+
     fetcher<OpenWeatherMap>(
       "https://api.openweathermap.org/data/2.5/forecast",
       {
         params: {
-          lat: "51.5074",
-          lon: "0.1278",
+          lat: location.latitude.toString(),
+          lon: location.longitude.toString(),
           appid: "d6008acc1d16a2432de986ca86ee3c1e",
         },
       }
     )
       .then((data) => {
         const { list, city } = data;
-        setForecast(list);
-        setLocalData({
-          ...city,
-          city: city.name,
-        });
-        setIsLoading(false);
+        setWeather((weather) => ({
+          ...weather,
+          forecast: list,
+          localData: city,
+          isLoading: false,
+        }));
       })
       .catch((err) => {
         console.error(err);
-        setError(err);
-        setIsLoading(false);
+        setWeather((weather) => ({
+          ...weather,
+          error: err.message,
+          isLoading: false,
+        }));
       });
-  }, []);
+  }, [location]);
 
   const cancelRequest = useCallback(() => {
     clearInterval(interval);
@@ -91,17 +103,12 @@ export default function WeatherContextProvider({ children }: Props) {
       cancelRequest();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [location]);
+
+  if (!weather) return <>{children}</>;
 
   return (
-    <WeatherContext.Provider
-      value={{
-        forecast,
-        localData,
-        error,
-        isLoading,
-      }}
-    >
+    <WeatherContext.Provider value={weather}>
       {children}
     </WeatherContext.Provider>
   );

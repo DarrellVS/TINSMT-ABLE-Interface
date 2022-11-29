@@ -53,7 +53,7 @@ export type Forecast = ForecastItem[];
 
 export interface LocalData {
   id: number;
-  city: string;
+  name: string;
   country: string;
   coord: {
     lon: number;
@@ -63,11 +63,4 @@ export interface LocalData {
   timezone: number;
   sunrise: number;
   sunset: number;
-}
-
-export interface WeatherContextType {
-  forecast?: Forecast;
-  localData?: LocalData;
-  error?: Error;
-  isLoading?: boolean;
 }
