@@ -39,6 +39,24 @@ export default function ProcessesProvider({ children }: ProviderProps) {
     );
   }, []);
 
+  const setActiveProcess = useCallback((id: number) => {
+    setProcesses((prev) =>
+      prev.map((currProcess) => {
+        if (currProcess.id === id) {
+          return {
+            ...currProcess,
+            isActive: true,
+          };
+        }
+
+        return {
+          ...currProcess,
+          isActive: false,
+        };
+      })
+    );
+  }, []);
+
   const addProcess = useCallback(
     (process: AddProcessType) => {
       setProcesses((prev) => [
@@ -47,11 +65,12 @@ export default function ProcessesProvider({ children }: ProviderProps) {
           ...process,
           toggleMinimize: () => toggleMinimizeProcess(process.id),
           close: () => closeProcess(process.id),
+          setActive: () => setActiveProcess(process.id),
           element: getElementForProcessType(process.type),
         },
       ]);
     },
-    [closeProcess, toggleMinimizeProcess]
+    [closeProcess, setActiveProcess, toggleMinimizeProcess]
   );
 
   return (

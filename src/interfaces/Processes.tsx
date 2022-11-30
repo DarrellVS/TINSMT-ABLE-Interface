@@ -6,11 +6,13 @@ export interface AddProcessType {
   name: string;
   icon: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   isMinimized: boolean;
+  isActive: boolean;
 }
 
 export interface DeskProcess extends AddProcessType {
   toggleMinimize: () => void;
   close: () => void;
+  setActive: () => void;
   element: ReactNode;
 }
 

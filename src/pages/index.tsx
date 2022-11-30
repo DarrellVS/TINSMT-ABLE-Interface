@@ -4,6 +4,7 @@ import { useProcesses } from "../context/Processes";
 import { BsFillCloudSunFill } from "react-icons/bs";
 import { PROCESS_TYPES } from "../interfaces/Processes";
 import { getIconForProcessType } from "../utils/processType";
+import InteractiveArea from "../components/InteractiveArea";
 
 export default function Home() {
   const { processes, addProcess } = useProcesses();
@@ -22,35 +23,39 @@ export default function Home() {
         name: "Weather",
         icon: getIconForProcessType(type),
         isMinimized: false,
+        isActive: false,
       });
     },
     [addProcess, highestProcessId, processes]
   );
 
   return (
-    <Flex
-      position="absolute"
-      right="2rem"
-      top="2rem"
-      gap="1rem"
-      direction="column"
-    >
-      {Object.keys(PROCESS_TYPES).map((key) => {
-        const type = PROCESS_TYPES[key as keyof typeof PROCESS_TYPES];
-        if (processes.some((process) => process.type === type)) return null;
+    <>
+      <InteractiveArea />
+      <Flex
+        position="absolute"
+        right="2rem"
+        top="2rem"
+        gap="1rem"
+        direction="column"
+      >
+        {Object.keys(PROCESS_TYPES).map((key) => {
+          const type = PROCESS_TYPES[key as keyof typeof PROCESS_TYPES];
+          if (processes.some((process) => process.type === type)) return null;
 
-        return (
-          <Button
-            key={type}
-            onClick={() => {
-              addDevProcess(type);
-            }}
-            colorScheme="blue"
-          >
-            Add {type}
-          </Button>
-        );
-      })}
-    </Flex>
+          return (
+            <Button
+              key={type}
+              onClick={() => {
+                addDevProcess(type);
+              }}
+              colorScheme="blue"
+            >
+              Add {type}
+            </Button>
+          );
+        })}
+      </Flex>
+    </>
   );
 }

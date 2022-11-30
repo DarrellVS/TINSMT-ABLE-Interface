@@ -1,7 +1,6 @@
 import { Box, Grid } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
-import useProcess from "../../hooks/useProcess";
+import React, { ReactNode, useEffect, useRef } from "react";
 import { DeskProcess } from "../../interfaces/Processes";
 import Controls from "./Controls";
 
@@ -19,7 +18,6 @@ export default function Window({
 }) {
   const draggableRef = useRef<HTMLDivElement>(null);
   const draggableHeaderRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   const handleMouseDown = (e: MouseEvent) => {
     const { current } = draggableRef;
@@ -31,7 +29,7 @@ export default function Window({
     const x = clientX - offsetLeft;
     const y = clientY - offsetTop;
 
-    setIsDragging(true);
+    process.setActive();
 
     const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
@@ -42,8 +40,6 @@ export default function Window({
     const handleMouseUp = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
-
-      setIsDragging(false);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -63,18 +59,25 @@ export default function Window({
   return (
     <Box
       position="absolute"
-      userSelect={isDragging ? "none" : "auto"}
+      userSelect={process.isActive ? "none" : "auto"}
       ref={draggableRef}
       pointerEvents={process.isMinimized ? "none" : "auto"}
+      zIndex={process.isActive ? "10" : "1"}
     >
       <motion.div
         variants={variants}
         initial="default"
         animate={process.isMinimized ? "minimized" : "default"}
       >
-        <Grid templateRows="3rem auto" gap="1rem">
+        <Grid templateRows="3rem auto">
           <Controls navRef={draggableHeaderRef} process={process} />
-          <Box border="1px solid" borderColor="gray.400" rounded="8px">
+          <Box
+            roundedBottom="8px"
+            overflow="hidden"
+            boxShadow="inset 0px 0px 2px rgba(255, 255, 255, 0.5)"
+            backdropFilter="blur(5px)"
+            zIndex="9"
+          >
             {children}
           </Box>
         </Grid>

@@ -9,10 +9,7 @@ import {
   SliderTrack,
 } from "@chakra-ui/react";
 import React, { useCallback, useRef, useState } from "react";
-
-// @ts-ignore
-import CanvasDraw from "react-canvas-draw";
-import { CanvasProps } from "../interfaces/canvas";
+import CanvasDraw, { CanvasDrawProps } from "react-canvas-draw";
 
 export interface Position {
   x: number;
@@ -27,24 +24,26 @@ function ColorItem({ color }: { color: string }) {
       borderRadius="50%"
       bg={color}
       cursor="pointer"
-      boxShadow={`5px 5px 10px rgba(0,0,0,0.2)`}
+      boxShadow={`0 0 10px rgba(255, 255, 255, .25)`}
+      position="relative"
     />
   );
 }
 
 export default function DrawingCanvas() {
-  const [canvasProps, setCanvasProps] = useState<CanvasProps>({
+  const [canvasProps, setCanvasProps] = useState<CanvasDrawProps>({
     brushColor: "red",
     hideGrid: true,
     canvasWidth: 500,
     brushRadius: 2,
+    enablePanAndZoom: true,
+    mouseZoomFactor: -0.01,
+    hideInterface: true,
   });
-
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<CanvasDraw>(null);
 
   const undo = useCallback(() => {
     if (!canvasRef.current) return;
-    // @ts-ignore
     canvasRef.current.undo();
   }, []);
 
@@ -54,14 +53,17 @@ export default function DrawingCanvas() {
     "blue",
     "purple",
     "yellow",
-    "orange",
     "black",
     "white",
   ];
 
   return (
     <Grid templateRows="auto auto">
-      <Box p="2rem" bg="gray.200" w={canvasProps.canvasWidth}>
+      <Box
+        p="2rem"
+        w={canvasProps.canvasWidth}
+        boxShadow="inset 0px -2px 2px -2px rgba(255, 255, 255, 0.5)"
+      >
         <Flex gap="1rem" flexWrap="wrap">
           {defaultColors.map((color) => (
             <Box
@@ -100,7 +102,11 @@ export default function DrawingCanvas() {
           </Slider>
         </Flex>
       </Box>
-      <CanvasDraw ref={canvasRef} {...canvasProps} />
+      <CanvasDraw
+        ref={canvasRef}
+        {...canvasProps}
+        backgroundColor="transparent"
+      />
     </Grid>
   );
 }

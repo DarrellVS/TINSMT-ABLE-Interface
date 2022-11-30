@@ -1,9 +1,11 @@
-import { Flex, IconButton } from "@chakra-ui/react";
+import { Flex, IconButton, useColorMode } from "@chakra-ui/react";
 import React from "react";
+import { BsSun } from "react-icons/bs";
 import { useProcesses } from "../../context/Processes";
 
 export default function Dock() {
   const { processes } = useProcesses();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   return (
     <Flex
@@ -14,6 +16,7 @@ export default function Dock() {
       alignItems="center"
       justifyContent="center"
       gap="1rem"
+      zIndex={2}
     >
       {processes.map((process) => {
         return (
@@ -27,6 +30,15 @@ export default function Dock() {
           />
         );
       })}
+
+      {/* Toggle color mode button */}
+      {/* <IconButton
+        icon={<BsSun />}
+        onClick={toggleColorMode}
+        aria-label="color mode button"
+        size="lg"
+        ml={processes.length > 0 ? "2rem" : "0"}
+      /> */}
     </Flex>
   );
 }

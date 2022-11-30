@@ -16,11 +16,15 @@ export default function Controls({
     <Flex
       cursor="grab"
       ref={navRef}
-      bg="gray.400"
-      rounded="8px"
+      roundedTop="8px"
       alignItems="center"
       px="1rem"
       userSelect="none"
+      backdropFilter="blur(5px)"
+      bg="purple.800"
+      bottom="-2px"
+      position="relative"
+      zIndex="10"
       {...rest}
     >
       <Text>
