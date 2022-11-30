@@ -4,15 +4,21 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { theme } from "../theme";
 import Layout from "../components/Layout";
 import WeatherContextProvider from "../context/WeatherContext";
+import ProcessesProvider from "../context/Processes";
+import ProcessesManager from "../components/Processes/ProcessesManager";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <WeatherContextProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </WeatherContextProvider>
+      <ProcessesProvider>
+        <WeatherContextProvider>
+          <ProcessesManager>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ProcessesManager>
+        </WeatherContextProvider>
+      </ProcessesProvider>
     </ChakraProvider>
   );
 }

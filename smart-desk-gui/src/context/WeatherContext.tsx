@@ -6,15 +6,12 @@ import React, {
   useState,
 } from "react";
 import useGeoLocation from "../hooks/useGeoLocation";
+import { ProviderProps } from "../interfaces";
 import {
   Forecast,
   LocalData,
   OpenWeatherMap,
 } from "../interfaces/OpenWeatherMap";
-
-interface Props {
-  children: React.ReactNode;
-}
 
 const WeatherContext = createContext<Weather>({});
 
@@ -52,7 +49,7 @@ interface Weather {
   error?: string;
 }
 
-export default function WeatherContextProvider({ children }: Props) {
+export default function WeatherContextProvider({ children }: ProviderProps) {
   const [interval, setIntervalState] = useState<NodeJS.Timer>();
   const [weather, setWeather] = useState<Weather>({
     isLoading: true,
