@@ -9,13 +9,12 @@ export default function ProcessesManager({
   children: ReactNode;
 }) {
   const { processes } = useProcesses();
-
   return (
     <>
       {processes.map((process) => {
         return (
           <Window key={process.id} process={process}>
-            <Weather />
+            {process.element}
           </Window>
         );
       })}

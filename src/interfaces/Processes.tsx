@@ -2,7 +2,7 @@ import { ReactNode, RefObject } from "react";
 
 export interface AddProcessType {
   id: number;
-  type: VALID_PROCESSES;
+  type: PROCESS_TYPES;
   name: string;
   icon: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   isMinimized: boolean;
@@ -11,6 +11,7 @@ export interface AddProcessType {
 export interface DeskProcess extends AddProcessType {
   toggleMinimize: () => void;
   close: () => void;
+  element: ReactNode;
 }
 
 export type DeskProcesses = DeskProcess[];
@@ -20,8 +21,9 @@ export interface ProcessesProviderType {
   addProcess: (process: AddProcessType) => void;
 }
 
-export enum VALID_PROCESSES {
+export enum PROCESS_TYPES {
   WEATHER = "WEATHER",
+  DRAW = "DRAW",
   // CALENDAR = "CALENDAR",
   // NOTES = "NOTES",
 }

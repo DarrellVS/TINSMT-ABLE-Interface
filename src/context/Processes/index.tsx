@@ -6,6 +6,7 @@ import {
   ProcessesProviderType,
 } from "../../interfaces/Processes";
 import { ContextNotReadyFunction } from "../../utils";
+import { getElementForProcessType } from "../../utils/processType";
 
 const ProcessesContext = createContext<ProcessesProviderType>({
   processes: [],
@@ -46,6 +47,7 @@ export default function ProcessesProvider({ children }: ProviderProps) {
           ...process,
           toggleMinimize: () => toggleMinimizeProcess(process.id),
           close: () => closeProcess(process.id),
+          element: getElementForProcessType(process.type),
         },
       ]);
     },

@@ -14,13 +14,14 @@ export default function Controls({
 }: Props & FlexProps) {
   return (
     <Flex
-      {...rest}
       cursor="grab"
       ref={navRef}
       bg="gray.400"
       rounded="8px"
       alignItems="center"
       px="1rem"
+      userSelect="none"
+      {...rest}
     >
       <Text>
         {process.name}, id: {process.id}

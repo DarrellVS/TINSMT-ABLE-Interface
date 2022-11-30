@@ -61,22 +61,24 @@ export default function Window({
   });
 
   return (
-    <motion.div
-      style={{
-        position: "absolute",
-        userSelect: isDragging ? "none" : "auto",
-      }}
+    <Box
+      position="absolute"
+      userSelect={isDragging ? "none" : "auto"}
       ref={draggableRef}
-      variants={variants}
-      initial="default"
-      animate={process.isMinimized ? "minimized" : "default"}
+      pointerEvents={process.isMinimized ? "none" : "auto"}
     >
-      <Grid templateRows="3rem auto" gap="1rem">
-        <Controls navRef={draggableHeaderRef} process={process} />
-        <Box border="1px solid" borderColor="gray.400" rounded="8px">
-          {children}
-        </Box>
-      </Grid>
-    </motion.div>
+      <motion.div
+        variants={variants}
+        initial="default"
+        animate={process.isMinimized ? "minimized" : "default"}
+      >
+        <Grid templateRows="3rem auto" gap="1rem">
+          <Controls navRef={draggableHeaderRef} process={process} />
+          <Box border="1px solid" borderColor="gray.400" rounded="8px">
+            {children}
+          </Box>
+        </Grid>
+      </motion.div>
+    </Box>
   );
 }
