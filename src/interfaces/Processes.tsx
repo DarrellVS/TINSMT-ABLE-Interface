@@ -28,6 +28,7 @@ export interface ProcessesProviderType {
 }
 
 export enum PROCESS_TYPES {
+  CALCULATOR = "CALCULATOR",
   WEATHER = "WEATHER",
   CLOCK = "CLOCK",
   DRAW = "DRAW",
