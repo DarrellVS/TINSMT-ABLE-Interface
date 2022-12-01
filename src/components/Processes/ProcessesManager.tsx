@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
 import { useProcesses } from "../../context/Processes";
-import Weather from "../Weather";
 import Window from "../Window";
 
 export default function ProcessesManager({

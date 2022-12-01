@@ -1,4 +1,4 @@
-import { ReactNode, RefObject } from "react";
+import { ReactNode } from "react";
 
 export interface AddProcessType {
   id: number;
@@ -12,7 +12,7 @@ export interface AddProcessType {
 export interface DeskProcess extends AddProcessType {
   toggleMinimize: () => void;
   close: () => void;
-  setActive: () => void;
+  setActive: (isActive?: boolean) => void;
   element: ReactNode;
 }
 
@@ -25,6 +25,7 @@ export interface ProcessesProviderType {
 
 export enum PROCESS_TYPES {
   WEATHER = "WEATHER",
+  CLOCK = "CLOCK",
   DRAW = "DRAW",
   // CALENDAR = "CALENDAR",
   // NOTES = "NOTES",

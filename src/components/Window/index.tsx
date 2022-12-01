@@ -2,6 +2,7 @@ import { Box, Grid } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import React, { ReactNode, useEffect, useRef } from "react";
 import { DeskProcess } from "../../interfaces/Processes";
+import { OutsideAlerter } from "../OutsideAlerter";
 import Controls from "./Controls";
 
 const variants = {
@@ -29,7 +30,7 @@ export default function Window({
     const x = clientX - offsetLeft;
     const y = clientY - offsetTop;
 
-    process.setActive();
+    process.setActive(true);
 
     const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
@@ -69,14 +70,18 @@ export default function Window({
         initial="default"
         animate={process.isMinimized ? "minimized" : "default"}
       >
-        <Grid templateRows="3rem auto">
+        <Grid
+          templateRows="3rem auto"
+          boxShadow="5px 5px 10px rgba(0, 0, 0, 0.15)"
+        >
           <Controls navRef={draggableHeaderRef} process={process} />
           <Box
             roundedBottom="8px"
             overflow="hidden"
+            zIndex="9"
             boxShadow="inset 0px 0px 2px rgba(255, 255, 255, 0.5)"
             backdropFilter="blur(5px)"
-            zIndex="9"
+            background="rgba(0, 0, 0, 0.25)"
           >
             {children}
           </Box>
