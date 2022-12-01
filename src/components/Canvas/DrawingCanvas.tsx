@@ -8,7 +8,7 @@ import {
   SliderThumb,
   SliderTrack,
 } from "@chakra-ui/react";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import CanvasDraw, { CanvasDrawProps } from "react-canvas-draw";
 
 export interface Position {
@@ -31,6 +31,7 @@ function ColorItem({ color }: { color: string }) {
 }
 
 export default function DrawingCanvas() {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const [canvasProps, setCanvasProps] = useState<CanvasDrawProps>({
     brushColor: "red",
     hideGrid: true,
@@ -58,10 +59,9 @@ export default function DrawingCanvas() {
   ];
 
   return (
-    <Grid templateRows="auto auto">
+    <Grid templateRows="auto auto" ref={wrapperRef}>
       <Box
         p="2rem"
-        w={canvasProps.canvasWidth}
         boxShadow="inset 0px -2px 2px -2px rgba(255, 255, 255, 0.5)"
       >
         <Flex gap="1rem" flexWrap="wrap">

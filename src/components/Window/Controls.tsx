@@ -2,6 +2,24 @@ import { Flex, Text, FlexProps } from "@chakra-ui/react";
 import React, { RefObject } from "react";
 import { DeskProcess } from "../../interfaces/Processes";
 
+interface MBProps {
+  color: string;
+  onClick: () => void;
+}
+
+function ManipulationButton({ color, onClick }: MBProps) {
+  return (
+    <Flex
+      w="10px"
+      h="10px"
+      borderRadius="50%"
+      bg={color}
+      onClick={onClick}
+      cursor="pointer"
+    />
+  );
+}
+
 interface Props {
   process: DeskProcess;
   navRef: RefObject<HTMLDivElement>;
@@ -26,18 +44,16 @@ export default function Controls({
       position="relative"
       zIndex="10"
       {...rest}
+      gap="2rem"
     >
       <Text>
         {process.name}, id: {process.id}
       </Text>
 
       <Flex ml="auto" gap="1rem">
-        <Text cursor="pointer" onClick={process.toggleMinimize}>
-          Min
-        </Text>
-        <Text cursor="pointer" onClick={process.close}>
-          Close
-        </Text>
+        <ManipulationButton color="orange" onClick={process.toggleMinimize} />
+        <ManipulationButton color="green" onClick={process.toggleMaximize} />
+        <ManipulationButton color="red" onClick={process.close} />
       </Flex>
     </Flex>
   );

@@ -43,10 +43,24 @@ export default function ProcessesProvider({ children }: ProviderProps) {
     );
   }, []);
 
+  const minimizeProcess = useCallback((id: number) => {
+    setProcesses((prev) =>
+      prev.map((currProcess) => {
+        if (currProcess.id === id) {
+          return {
+            ...currProcess,
+            isMinimized: true,
+            isActive: false,
+          };
+        }
+
+        return currProcess;
+      })
+    );
+  }, []);
+
   const setActiveProcess = useCallback(
     (id: number, isActive: boolean = true) => {
-      console.log(id, isActive);
-
       setProcesses((prev) =>
         prev.map((currProcess) => {
           if (currProcess.id === id) {
@@ -69,21 +83,75 @@ export default function ProcessesProvider({ children }: ProviderProps) {
     []
   );
 
+  const maximizeProcess = useCallback((id: number) => {
+    setProcesses((prev) =>
+      prev.map((currProcess) => {
+        if (currProcess.id === id) {
+          return {
+            ...currProcess,
+            isMinimized: false,
+            isMaximized: true,
+            isActive: true,
+          };
+        }
+
+        return {
+          ...currProcess,
+          isActive: false,
+        };
+      })
+    );
+  }, []);
+
+  const toggleMaximizeProcess = useCallback((id: number) => {
+    setProcesses((prev) =>
+      prev.map((currProcess) => {
+        if (currProcess.id === id) {
+          return {
+            ...currProcess,
+            isMinimized: false,
+            isMaximized: !currProcess.isMaximized,
+            isActive: true,
+          };
+        }
+
+        return {
+          ...currProcess,
+          isActive: false,
+        };
+      })
+    );
+  }, []);
+
   const addProcess = useCallback(
     (process: AddProcessType) => {
       setProcesses((prev) => [
-        ...prev,
+        ...prev.map((currProcess) => ({
+          ...currProcess,
+          isActive: false,
+        })),
         {
           ...process,
+          minimize: () => minimizeProcess(process.id),
           toggleMinimize: () => toggleMinimizeProcess(process.id),
+          maximize: () => maximizeProcess(process.id),
+          toggleMaximize: () => toggleMaximizeProcess(process.id),
           close: () => closeProcess(process.id),
           setActive: (isActive?: boolean) =>
             setActiveProcess(process.id, isActive),
           element: getElementForProcessType(process.type),
+          isActive: true,
         },
       ]);
     },
-    [closeProcess, setActiveProcess, toggleMinimizeProcess]
+    [
+      closeProcess,
+      maximizeProcess,
+      minimizeProcess,
+      setActiveProcess,
+      toggleMaximizeProcess,
+      toggleMinimizeProcess,
+    ]
   );
 
   return (

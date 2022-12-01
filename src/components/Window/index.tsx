@@ -64,15 +64,25 @@ export default function Window({
       ref={draggableRef}
       pointerEvents={process.isMinimized ? "none" : "auto"}
       zIndex={process.isActive ? "10" : "1"}
+      {...(process.isMaximized && {
+        left: "0 !important",
+        top: "0 !important",
+        width: "100vw !important",
+        height: "100vh !important",
+      })}
     >
       <motion.div
         variants={variants}
         initial="default"
         animate={process.isMinimized ? "minimized" : "default"}
+        style={{
+          height: "100%",
+        }}
       >
         <Grid
           templateRows="3rem auto"
           boxShadow="5px 5px 10px rgba(0, 0, 0, 0.15)"
+          height="100%"
         >
           <Controls navRef={draggableHeaderRef} process={process} />
           <Box
@@ -82,6 +92,7 @@ export default function Window({
             boxShadow="inset 0px 0px 2px rgba(255, 255, 255, 0.5)"
             backdropFilter="blur(5px)"
             background="rgba(0, 0, 0, 0.25)"
+            height="100%"
           >
             {children}
           </Box>
