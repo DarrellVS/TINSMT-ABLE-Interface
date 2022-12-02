@@ -2,7 +2,7 @@ import { Box, Grid } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import React, { ReactNode, useEffect, useRef } from "react";
 import { DeskProcess } from "../../interfaces/Processes";
-import { OutsideAlerter } from "../OutsideAlerter";
+import { getPositionForEvent } from "../../utils/interactionWrapper";
 import Controls from "./Controls";
 
 const variants = {
@@ -20,11 +20,11 @@ export default function Window({
   const draggableRef = useRef<HTMLDivElement>(null);
   const draggableHeaderRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseDown = (e: MouseEvent) => {
+  const handleMouseDown = (e: MouseEvent | TouchEvent) => {
     const { current } = draggableRef;
     if (!current) return;
 
-    const { clientX, clientY } = e;
+    const { clientX, clientY } = getPositionForEvent(e);
     const { offsetLeft, offsetTop } = current;
 
     const x = clientX - offsetLeft;
@@ -32,8 +32,8 @@ export default function Window({
 
     process.setActive(true);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
+    const handleMouseMove = (e: MouseEvent | TouchEvent) => {
+      const { clientX, clientY } = getPositionForEvent(e);
       current.style.left = `${clientX - x}px`;
       current.style.top = `${clientY - y}px`;
     };
@@ -41,10 +41,14 @@ export default function Window({
     const handleMouseUp = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleMouseMove);
+      window.removeEventListener("touchend", handleMouseUp);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchmove", handleMouseMove);
+    window.addEventListener("touchend", handleMouseUp);
   };
 
   useEffect(() => {
@@ -52,8 +56,10 @@ export default function Window({
     if (!current) return;
 
     current.addEventListener("mousedown", handleMouseDown);
+    current.addEventListener("touchstart", handleMouseDown);
     return () => {
       current.removeEventListener("mousedown", handleMouseDown);
+      current.removeEventListener("touchstart", handleMouseDown);
     };
   });
 

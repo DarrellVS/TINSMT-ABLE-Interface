@@ -1,9 +1,8 @@
-import { BsClock, BsClouds, BsPencil } from "react-icons/bs";
+import { BsCalculator, BsClock, BsClouds, BsPencil } from "react-icons/bs";
 import DrawingCanvas from "../components/Canvas/DrawingCanvas";
 import Clock from "../components/Clock";
 import Weather from "../components/Weather";
 import { PROCESS_TYPES } from "../interfaces/Processes";
-import { CiCalculator2 } from "react-icons/ci";
 import Calculator from "../components/Calculator";
 
 const map = {
@@ -21,7 +20,7 @@ const map = {
   },
   [PROCESS_TYPES.CALCULATOR]: {
     element: <Calculator />,
-    icon: <CiCalculator2 />,
+    icon: <BsCalculator />,
   },
 };
 

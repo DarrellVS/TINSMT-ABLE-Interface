@@ -8,3 +8,8 @@ export interface UserLocation {
 export interface ProviderProps {
   children: ReactNode;
 }
+
+export interface ModalControls {
+  isOpen: boolean;
+  onClose: () => void;
+}

@@ -95,7 +95,7 @@ export default function InteractiveArea() {
       w="100vw"
       h="100vh"
       position="absolute"
-      zIndex={-1}
+      zIndex={0}
       backgroundImage="url('/images/bg.png')"
       backgroundSize="cover"
     >
