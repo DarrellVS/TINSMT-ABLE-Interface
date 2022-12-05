@@ -96,8 +96,7 @@ export default function InteractiveArea() {
       h="100vh"
       position="absolute"
       zIndex={0}
-      backgroundImage="url('/images/bg.png')"
-      backgroundSize="cover"
+      background="linear-gradient(135deg, rgba(17,22,34,1) 0%, rgba(32,32,82,1) 100%)"
     >
       {isHeld && (
         <OutsideAlerter cb={() => setIsHeld(false)}>

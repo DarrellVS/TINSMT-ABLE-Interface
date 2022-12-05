@@ -63,85 +63,92 @@ export default function Dock() {
     <>
       <Flex
         position="absolute"
+        alignItems="center"
+        justifyContent="center"
         bottom="20px"
         left="0"
         right="0"
-        alignItems="center"
-        justifyContent="center"
-        gap="1rem"
         zIndex={2}
       >
-        {types.sort().map((type) => {
-          const process = processes.find((process) => process.type === type);
-          const controls = process
-            ? contextMenuControls.find((c) => c.id === process.id)
-            : undefined;
+        <Flex
+          bg="#0E121B"
+          alignItems="center"
+          justifyContent="center"
+          gap="1rem"
+          p="1rem"
+          rounded="14px"
+        >
+          {types.sort().map((type) => {
+            const process = processes.find((process) => process.type === type);
+            const controls = process
+              ? contextMenuControls.find((c) => c.id === process.id)
+              : undefined;
 
-          return (
-            <Box key={type} position="relative">
-              <IconButton
-                aria-label={type}
-                icon={getIconForProcessType(type as PROCESS_TYPES)}
-                onClick={() => {
-                  if (process) {
-                    process.toggleMinimize();
-                  } else {
-                    createProcess(type as PROCESS_TYPES);
-                  }
-                }}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  if (!controls) return;
-                  setContextMenuControls(
-                    contextMenuControls.map((c) => ({
-                      ...c,
-                      isOpen: c.id === controls.id,
-                    }))
-                  );
-                }}
-                colorScheme={
-                  process ? (process.isActive ? "green" : "blue") : "gray"
-                }
-                opacity={process ? (process.isMinimized ? 0.75 : 1) : 1}
-                size="lg"
-              />
-              {controls && controls.isOpen && (
-                <OutsideAlerter
-                  cb={() => {
+            return (
+              <Box key={type} position="relative">
+                <IconButton
+                  aria-label={type}
+                  icon={getIconForProcessType(type as PROCESS_TYPES)}
+                  onClick={() => {
+                    if (process) {
+                      process.toggleMinimize();
+                    } else {
+                      createProcess(type as PROCESS_TYPES);
+                    }
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    if (!controls) return;
                     setContextMenuControls(
                       contextMenuControls.map((c) => ({
                         ...c,
-                        isOpen: false,
+                        isOpen: c.id === controls.id,
                       }))
                     );
                   }}
-                >
-                  <ContextMenu
-                    isOpen={controls.isOpen}
-                    items={[
-                      {
-                        label: "Close",
-                        onClick: () => {
-                          if (process) process.close();
+                  colorScheme={
+                    process ? (process.isActive ? "green" : "blue") : "gray"
+                  }
+                  opacity={process ? (process.isMinimized ? 0.75 : 1) : 1}
+                  size="lg"
+                />
+                {controls && controls.isOpen && (
+                  <OutsideAlerter
+                    cb={() => {
+                      setContextMenuControls(
+                        contextMenuControls.map((c) => ({
+                          ...c,
+                          isOpen: false,
+                        }))
+                      );
+                    }}
+                  >
+                    <ContextMenu
+                      isOpen={controls.isOpen}
+                      items={[
+                        {
+                          label: "Close",
+                          onClick: () => {
+                            if (process) process.close();
+                          },
                         },
-                      },
-                    ]}
-                  />
-                </OutsideAlerter>
-              )}
-            </Box>
-          );
-        })}
+                      ]}
+                    />
+                  </OutsideAlerter>
+                )}
+              </Box>
+            );
+          })}
 
-        <IconButton
-          aria-label="Settings"
-          icon={<BsGear />}
-          onClick={onOpen}
-          colorScheme={"gray"}
-          opacity={0.75}
-          size="lg"
-          ml="2rem"
-        />
+          <IconButton
+            aria-label="Settings"
+            icon={<BsGear />}
+            onClick={onOpen}
+            colorScheme={"gray"}
+            opacity={0.75}
+            size="lg"
+          />
+        </Flex>
       </Flex>
 
       <SettingsModal isOpen={isOpen} onClose={onClose} />

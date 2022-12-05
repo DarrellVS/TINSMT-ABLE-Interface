@@ -1,6 +1,6 @@
 import { Box, Grid } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, { ReactNode, useEffect, useRef } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { DeskProcess } from "../../interfaces/Processes";
 import { getPositionForEvent } from "../../utils/interactionWrapper";
 import Controls from "./Controls";
@@ -21,6 +21,7 @@ export default function Window({
   const draggableHeaderRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: MouseEvent | TouchEvent) => {
+    let shouldMinimizeOnRelease = false;
     const { current } = draggableRef;
     if (!current) return;
 
@@ -34,11 +35,33 @@ export default function Window({
 
     const handleMouseMove = (e: MouseEvent | TouchEvent) => {
       const { clientX, clientY } = getPositionForEvent(e);
-      current.style.left = `${clientX - x}px`;
-      current.style.top = `${clientY - y}px`;
+
+      // Keep element within bounds
+      const { bottom, height, width } = current.getBoundingClientRect();
+      const newY =
+        bottom >= window.innerHeight
+          ? Math.max(0, Math.min(clientY - y, window.innerHeight - height))
+          : Math.max(0, Math.min(clientY - y, window.innerHeight));
+
+      const newX =
+        clientX + width >= window.innerWidth
+          ? Math.max(0, Math.min(clientX - x, window.innerWidth - width))
+          : Math.max(0, Math.min(clientX - x, window.innerWidth));
+
+      current.style.left = `${newX}px`;
+      current.style.top = `${newY}px`;
+
+      shouldMinimizeOnRelease =
+        clientX > window.innerWidth / 2 - 150 &&
+        clientX < window.innerWidth / 2 + 150 &&
+        window.innerHeight - clientY < 100;
     };
 
     const handleMouseUp = () => {
+      if (shouldMinimizeOnRelease) {
+        process.minimize();
+      }
+
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
       window.removeEventListener("touchmove", handleMouseMove);
@@ -85,23 +108,18 @@ export default function Window({
           height: "100%",
         }}
       >
-        <Grid
-          templateRows="3rem auto"
-          boxShadow="5px 5px 10px rgba(0, 0, 0, 0.15)"
-          height="100%"
-        >
-          <Controls navRef={draggableHeaderRef} process={process} />
+        <Grid templateRows="auto auto" height="100%">
           <Box
-            roundedBottom="8px"
+            roundedTop="14px"
             overflow="hidden"
             zIndex="9"
-            boxShadow="inset 0px 0px 2px rgba(255, 255, 255, 0.5)"
-            backdropFilter="blur(5px)"
             background="rgba(0, 0, 0, 0.25)"
             height="100%"
+            bg="#0E121B"
           >
             {children}
           </Box>
+          <Controls navRef={draggableHeaderRef} process={process} />
         </Grid>
       </motion.div>
     </Box>
