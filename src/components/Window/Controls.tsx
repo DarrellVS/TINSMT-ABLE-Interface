@@ -1,11 +1,6 @@
-import { Flex, Text, FlexProps, Box } from "@chakra-ui/react";
+import { Flex, FlexProps, Box } from "@chakra-ui/react";
 import React, { RefObject } from "react";
 import { DeskProcess } from "../../interfaces/Processes";
-
-interface MBProps {
-  color: string;
-  onClick: () => void;
-}
 
 interface Props {
   process: DeskProcess;

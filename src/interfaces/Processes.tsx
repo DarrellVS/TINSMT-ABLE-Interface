@@ -17,7 +17,6 @@ export interface DeskProcess extends AddProcessType {
   toggleMaximize: () => void;
   close: () => void;
   setActive: (isActive?: boolean) => void;
-  element: ReactNode;
 }
 
 export type DeskProcesses = DeskProcess[];
@@ -32,6 +31,7 @@ export enum PROCESS_TYPES {
   WEATHER = "WEATHER",
   CLOCK = "CLOCK",
   DRAW = "DRAW",
+  SPOTIFY = "SPOTIFY",
   // CALENDAR = "CALENDAR",
   // NOTES = "NOTES",
 }

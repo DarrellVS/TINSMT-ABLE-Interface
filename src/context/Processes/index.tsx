@@ -6,7 +6,6 @@ import {
   ProcessesProviderType,
 } from "../../interfaces/Processes";
 import { ContextNotReadyFunction } from "../../utils";
-import { getElementForProcessType } from "../../utils/processType";
 
 const ProcessesContext = createContext<ProcessesProviderType>({
   processes: [],
@@ -139,7 +138,6 @@ export default function ProcessesProvider({ children }: ProviderProps) {
           close: () => closeProcess(process.id),
           setActive: (isActive?: boolean) =>
             setActiveProcess(process.id, isActive),
-          element: getElementForProcessType(process.type),
           isActive: true,
         },
       ]);

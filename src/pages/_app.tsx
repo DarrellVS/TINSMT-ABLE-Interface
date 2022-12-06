@@ -6,6 +6,7 @@ import WeatherContextProvider from "../context/WeatherContext";
 import ProcessesProvider from "../context/Processes";
 import ProcessesManager from "../components/Processes/ProcessesManager";
 import { extendTheme } from "@chakra-ui/react";
+import DockProvider from "../context/DockProvider";
 
 const theme = extendTheme({
   initialColorMode: "dark",
@@ -27,15 +28,17 @@ const theme = extendTheme({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <ProcessesProvider>
-        <WeatherContextProvider>
-          <ProcessesManager>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </ProcessesManager>
-        </WeatherContextProvider>
-      </ProcessesProvider>
+      <DockProvider>
+        <ProcessesProvider>
+          <WeatherContextProvider>
+            <ProcessesManager>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ProcessesManager>
+          </WeatherContextProvider>
+        </ProcessesProvider>
+      </DockProvider>
     </ChakraProvider>
   );
 }

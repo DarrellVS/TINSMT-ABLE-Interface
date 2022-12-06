@@ -15,9 +15,9 @@ export default function useOutsideAlerter(ref: any, cb: () => void) {
   });
 
   useEffect(() => {
-    // eventManager.down.add();
+    eventManager.down.add();
     return () => {
-      // eventManager.down.remove();
+      eventManager.down.remove();
     };
   }, [cb, eventManager.down, ref]);
 }

@@ -41,9 +41,15 @@ function MotionButton({
       whileTap={{ scale: 0.9 }}
     >
       <Button
+        position="absolute"
         colorScheme="blue"
         onClick={() => {
           setIsHeld(false);
+          console.log("ok");
+        }}
+        onTouchEndCapture={() => {
+          setIsHeld(false);
+          console.log("touch");
         }}
       >
         {title}

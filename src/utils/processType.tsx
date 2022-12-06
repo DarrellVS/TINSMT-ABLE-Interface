@@ -1,9 +1,16 @@
-import { BsCalculator, BsClock, BsClouds, BsPencil } from "react-icons/bs";
+import {
+  BsCalculator,
+  BsClock,
+  BsClouds,
+  BsMusicNote,
+  BsPencil,
+} from "react-icons/bs";
 import DrawingCanvas from "../components/Canvas/DrawingCanvas";
 import Clock from "../components/Clock";
 import Weather from "../components/Weather";
 import { PROCESS_TYPES } from "../interfaces/Processes";
 import Calculator from "../components/Calculator";
+import Spotify from "../components/Spotify";
 
 const map = {
   [PROCESS_TYPES.WEATHER]: {
@@ -21,6 +28,10 @@ const map = {
   [PROCESS_TYPES.CALCULATOR]: {
     element: <Calculator />,
     icon: <BsCalculator />,
+  },
+  [PROCESS_TYPES.SPOTIFY]: {
+    element: <Spotify />,
+    icon: <BsMusicNote />,
   },
 };
 

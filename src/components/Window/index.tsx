@@ -1,6 +1,13 @@
 import { Box, Grid } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useDock } from "../../context/DockProvider";
 import { DeskProcess } from "../../interfaces/Processes";
 import { getPositionForEvent } from "../../utils/interactionWrapper";
 import Controls from "./Controls";
@@ -19,60 +26,81 @@ export default function Window({
 }) {
   const draggableRef = useRef<HTMLDivElement>(null);
   const draggableHeaderRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const { displayDropArea, setDisplayDropArea } = useDock();
 
-  const handleMouseDown = (e: MouseEvent | TouchEvent) => {
-    let shouldMinimizeOnRelease = false;
-    const { current } = draggableRef;
-    if (!current) return;
+  const handleMouseDown = useCallback(
+    (e: MouseEvent | TouchEvent) => {
+      let shouldMinimizeOnRelease = false;
+      const dock = document.getElementById("window-dock");
+      const {
+        left: dL,
+        top: dT,
+        width: dW,
+        height: dH,
+      } = dock
+        ? dock.getBoundingClientRect()
+        : { left: 0, top: 0, width: 0, height: 0 };
 
-    const { clientX, clientY } = getPositionForEvent(e);
-    const { offsetLeft, offsetTop } = current;
+      const { current } = draggableRef;
+      if (!current) return;
 
-    const x = clientX - offsetLeft;
-    const y = clientY - offsetTop;
-
-    process.setActive(true);
-
-    const handleMouseMove = (e: MouseEvent | TouchEvent) => {
       const { clientX, clientY } = getPositionForEvent(e);
+      const { offsetLeft, offsetTop } = current;
 
-      // Keep element within bounds
-      const { bottom, height, width } = current.getBoundingClientRect();
-      const newY =
-        bottom >= window.innerHeight
-          ? Math.max(0, Math.min(clientY - y, window.innerHeight - height))
-          : Math.max(0, Math.min(clientY - y, window.innerHeight));
+      const x = clientX - offsetLeft;
+      const y = clientY - offsetTop;
 
-      const newX =
-        clientX + width >= window.innerWidth
-          ? Math.max(0, Math.min(clientX - x, window.innerWidth - width))
-          : Math.max(0, Math.min(clientX - x, window.innerWidth));
+      process.setActive(true);
+      setIsDragging(true);
 
-      current.style.left = `${newX}px`;
-      current.style.top = `${newY}px`;
+      const handleMouseMove = (e: MouseEvent | TouchEvent) => {
+        const { clientX, clientY } = getPositionForEvent(e);
 
-      shouldMinimizeOnRelease =
-        clientX > window.innerWidth / 2 - 150 &&
-        clientX < window.innerWidth / 2 + 150 &&
-        window.innerHeight - clientY < 100;
-    };
+        // Keep element within bounds
+        const { bottom, height, width } = current.getBoundingClientRect();
+        const newY =
+          bottom >= window.innerHeight
+            ? Math.max(0, Math.min(clientY - y, window.innerHeight - height))
+            : Math.max(0, Math.min(clientY - y, window.innerHeight));
 
-    const handleMouseUp = () => {
-      if (shouldMinimizeOnRelease) {
-        process.minimize();
-      }
+        const newX =
+          clientX + width >= window.innerWidth
+            ? Math.max(0, Math.min(clientX - x, window.innerWidth - width))
+            : Math.max(0, Math.min(clientX - x, window.innerWidth));
 
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-      window.removeEventListener("touchmove", handleMouseMove);
-      window.removeEventListener("touchend", handleMouseUp);
-    };
+        current.style.left = `${newX}px`;
+        current.style.top = `${newY}px`;
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
-    window.addEventListener("touchmove", handleMouseMove);
-    window.addEventListener("touchend", handleMouseUp);
-  };
+        shouldMinimizeOnRelease =
+          clientX > dL &&
+          clientX < dL + dW &&
+          clientY > dT &&
+          clientY < dT + dH;
+
+        setDisplayDropArea(shouldMinimizeOnRelease);
+      };
+
+      const handleMouseUp = () => {
+        if (shouldMinimizeOnRelease) {
+          process.minimize();
+          setDisplayDropArea(false);
+          setIsDragging(false);
+        }
+
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("mouseup", handleMouseUp);
+        window.removeEventListener("touchmove", handleMouseMove);
+        window.removeEventListener("touchend", handleMouseUp);
+      };
+
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("touchmove", handleMouseMove);
+      window.addEventListener("touchend", handleMouseUp);
+    },
+    [process, setDisplayDropArea]
+  );
 
   useEffect(() => {
     const { current } = draggableHeaderRef;
@@ -99,6 +127,8 @@ export default function Window({
         width: "100vw !important",
         height: "100vh !important",
       })}
+      opacity={isDragging && displayDropArea ? "0.5" : "1"}
+      transition="opacity 0.2s ease-in-out"
     >
       <motion.div
         variants={variants}
