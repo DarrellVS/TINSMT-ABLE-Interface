@@ -1,12 +1,11 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
-import Layout from "../components/Layout";
 import WeatherContextProvider from "../context/WeatherContext";
 import ProcessesProvider from "../context/Processes";
-import ProcessesManager from "../components/Processes/ProcessesManager";
 import { extendTheme } from "@chakra-ui/react";
 import DockProvider from "../context/DockProvider";
+import Welcome from "../components/Welcome";
 
 const theme = extendTheme({
   initialColorMode: "dark",
@@ -31,11 +30,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <DockProvider>
         <ProcessesProvider>
           <WeatherContextProvider>
-            <ProcessesManager>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </ProcessesManager>
+            {/* <Welcome> */}
+            <Component {...pageProps} />
+            {/* </Welcome> */}
           </WeatherContextProvider>
         </ProcessesProvider>
       </DockProvider>
