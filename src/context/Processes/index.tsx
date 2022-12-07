@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
+import { Position } from "../../components/Canvas/DrawingCanvas";
 import { ProviderProps } from "../../interfaces";
 import {
   AddProcessType,
@@ -23,13 +24,13 @@ export default function ProcessesProvider({ children }: ProviderProps) {
     setProcesses((prev) => prev.filter((currProcess) => currProcess.id !== id));
   }, []);
 
-  const minimizeProcess = useCallback((id: number) => {
+  const minimizeProcess = useCallback((id: number, state: boolean = true) => {
     setProcesses((prev) =>
       prev.map((currProcess) => {
         if (currProcess.id === id) {
           return {
             ...currProcess,
-            isMinimized: true,
+            isMinimized: state,
             isActive: false,
           };
         }
@@ -72,7 +73,7 @@ export default function ProcessesProvider({ children }: ProviderProps) {
         })),
         {
           ...process,
-          minimize: () => minimizeProcess(process.id),
+          minimize: (state?: boolean) => minimizeProcess(process.id, state),
           close: () => closeProcess(process.id),
           setActive: (isActive?: boolean) =>
             setActiveProcess(process.id, isActive),

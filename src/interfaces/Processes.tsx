@@ -11,7 +11,7 @@ export interface AddProcessType {
 }
 
 export interface DeskProcess extends AddProcessType {
-  minimize: () => void;
+  minimize: (state?: boolean) => void;
   close: () => void;
   setActive: (isActive?: boolean) => void;
 }

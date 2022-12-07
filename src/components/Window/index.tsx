@@ -116,19 +116,17 @@ export default function Window({
 
   return (
     <Box
+      ref={draggableRef}
       position="absolute"
       userSelect={process.isActive ? "none" : "auto"}
-      ref={draggableRef}
       pointerEvents={process.isMinimized ? "none" : "auto"}
-      zIndex={process.isActive ? "10" : "1"}
-      {...(process.isMaximized && {
-        left: "0 !important",
-        top: "0 !important",
-        width: "100vw !important",
-        height: "100vh !important",
-      })}
+      zIndex={process.isActive ? "10" : "3"}
       opacity={isDragging && displayDropArea ? "0.5" : "1"}
       transition="opacity 0.2s ease-in-out"
+      boxShadow={
+        process.isActive ? "5px 5px 20px rgba(255, 255, 255, 0.05)" : "none"
+      }
+      rounded="14px"
     >
       <motion.div
         variants={variants}

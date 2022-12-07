@@ -6,7 +6,7 @@ import {
   toggleShuffleHelper,
 } from "./utils";
 
-const CLIENT_ID = "fc35b13f6c684040a36fab8b4c20ae7d";
+const CLIENT_ID = "5db82511c47d4dd780e2fb1a4ed6a8db";
 const REDIRECT_URI = "http://localhost:3000/spotify/callback";
 const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
 const RESPONSE_TYPE = "token";
@@ -49,13 +49,18 @@ export default function useSpotify() {
 
   const fetchPlayerData = useCallback(async () => {
     if (!token) return;
-    const { data, status } = await getPlayerState(token);
-    if (status !== 200) {
-      setPlayerState(undefined);
-      return;
-    }
+    const returned = await getPlayerState(token);
 
-    setPlayerState(data);
+    try {
+      const { data, status } = returned;
+
+      if (status !== 200) {
+        setPlayerState(undefined);
+        return;
+      }
+
+      setPlayerState(data);
+    } catch (error) {}
   }, [token]);
 
   const toggleShuffle = useCallback(async () => {
@@ -111,7 +116,7 @@ export default function useSpotify() {
   useEffect(() => {
     if (!token) return;
     fetchPlayerData();
-    const interval = setInterval(fetchPlayerData, 5000);
+    const interval = setInterval(fetchPlayerData, 10000);
     setIntervalId(interval);
 
     return () => {

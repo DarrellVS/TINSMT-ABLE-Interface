@@ -62,7 +62,6 @@ export default function Spotify() {
     toggleRepeat,
     logOut,
   } = useSpotify();
-  console.log(playerState);
 
   return (
     <Box>
