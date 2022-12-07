@@ -12,9 +12,6 @@ export interface AddProcessType {
 
 export interface DeskProcess extends AddProcessType {
   minimize: () => void;
-  toggleMinimize: () => void;
-  maximize: () => void;
-  toggleMaximize: () => void;
   close: () => void;
   setActive: (isActive?: boolean) => void;
 }
