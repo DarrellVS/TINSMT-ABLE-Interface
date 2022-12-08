@@ -1,10 +1,15 @@
-import { useProcesses } from "../context/Processes";
 import InteractiveArea from "../components/InteractiveArea";
+import ProcessesManager from "../components/Processes/ProcessesManager";
+import Layout from "../components/Layout";
 
 export default function Home() {
   return (
     <>
-      <InteractiveArea />
+      <ProcessesManager>
+        <Layout>
+          <InteractiveArea />
+        </Layout>
+      </ProcessesManager>
     </>
   );
 }

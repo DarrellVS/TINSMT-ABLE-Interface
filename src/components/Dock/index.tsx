@@ -90,7 +90,7 @@ export default function Dock() {
                     icon={getIconForProcessType(type as PROCESS_TYPES)}
                     onClick={() => {
                       if (process) {
-                        process.toggleMinimize();
+                        process.minimize(!process.isMinimized);
                       } else {
                         createProcess(type as PROCESS_TYPES);
                       }

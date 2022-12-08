@@ -8,7 +8,7 @@ import {
   SliderThumb,
   SliderTrack,
 } from "@chakra-ui/react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import CanvasDraw, { CanvasDrawProps } from "react-canvas-draw";
 
 export interface Position {
@@ -40,6 +40,7 @@ export default function DrawingCanvas() {
     enablePanAndZoom: true,
     mouseZoomFactor: -0.01,
     hideInterface: true,
+    lazyRadius: 0,
   });
   const canvasRef = useRef<CanvasDraw>(null);
 

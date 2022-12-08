@@ -62,7 +62,6 @@ export default function Spotify() {
     toggleRepeat,
     logOut,
   } = useSpotify();
-  console.log(playerState);
 
   return (
     <Box>
@@ -77,7 +76,7 @@ export default function Spotify() {
                 h="12rem"
                 w="25rem"
                 objectFit="cover"
-                filter="brightness(0.65)"
+                filter="brightness(0.5) blur(3px)"
               />
 
               <Box position="absolute" left="0" top="0" right="0" p="1.25rem">
