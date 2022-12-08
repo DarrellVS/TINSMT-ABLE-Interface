@@ -22,12 +22,15 @@ interface DefaultFetcherOptions {
   controller?: AbortController;
 }
 
-function fetcher<T>(url: string, options: DefaultFetcherOptions): Promise<T> {
-  const { method = "GET", params, body } = options;
+export function fetcher<T>(
+  url: string,
+  options?: DefaultFetcherOptions
+): Promise<T> {
+  const { method = "GET", params, body } = options || {};
   const query = new URLSearchParams(params);
   const urlWithQuery = `${url}?${query.toString()}`;
 
-  const { signal } = options.controller || new AbortController();
+  const { signal } = options?.controller || new AbortController();
 
   const bodyHeaders = {
     headers: {
@@ -63,8 +66,8 @@ export default function WeatherContextProvider({ children }: ProviderProps) {
       "https://api.openweathermap.org/data/2.5/forecast",
       {
         params: {
-          lat: location.latitude.toString(),
-          lon: location.longitude.toString(),
+          lat: location.lat.toString(),
+          lon: location.lon.toString(),
           appid: "d6008acc1d16a2432de986ca86ee3c1e",
         },
       }

@@ -17,6 +17,7 @@ import { ModalControls } from "../interfaces";
 
 export default function SettingsModal({ isOpen, onClose }: ModalControls) {
   const { colorMode, toggleColorMode } = useColorMode();
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="2xl">
       <ModalOverlay />
