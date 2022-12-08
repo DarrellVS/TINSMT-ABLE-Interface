@@ -31,6 +31,8 @@ export default function Window({
 
   const handleMouseDown = useCallback(
     (e: MouseEvent | TouchEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
       let shouldMinimizeOnRelease = false;
       const dock = document.getElementById("window-dock");
       const {
@@ -55,6 +57,8 @@ export default function Window({
       setIsDragging(true);
 
       const handleMouseMove = (e: MouseEvent | TouchEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
         const { clientX, clientY } = getPositionForEvent(e);
 
         // Keep element within bounds
