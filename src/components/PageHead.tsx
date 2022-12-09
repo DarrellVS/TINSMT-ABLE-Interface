@@ -14,7 +14,7 @@ export default function PageHead() {
 
       <link rel="manifest" href="/manifest.json" />
       <link
-        href="/icons/favicon.png"
+        href="/pwa-icons/favicon.png"
         rel="favicon"
         type="image/png"
         sizes="16x16"

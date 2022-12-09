@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 
 export interface UserLocation {
-  lon: number;
-  lat: number;
+  longitude: number;
+  latitude: number;
 }
 
 export interface ProviderProps {

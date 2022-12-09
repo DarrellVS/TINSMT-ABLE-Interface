@@ -66,8 +66,8 @@ export default function WeatherContextProvider({ children }: ProviderProps) {
       "https://api.openweathermap.org/data/2.5/forecast",
       {
         params: {
-          lat: location.lat.toString(),
-          lon: location.lon.toString(),
+          lat: location.latitude.toString(),
+          lon: location.longitude.toString(),
           appid: "d6008acc1d16a2432de986ca86ee3c1e",
         },
       }

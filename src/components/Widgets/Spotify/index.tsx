@@ -22,7 +22,6 @@ export default function Spotify() {
     getAuthUrl,
     isAuthed,
     toggleRepeat,
-    logOut,
   } = useSpotify();
 
   return (

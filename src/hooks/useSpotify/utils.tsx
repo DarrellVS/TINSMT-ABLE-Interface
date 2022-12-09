@@ -1,5 +1,22 @@
 import axios from "axios";
 
+export const CLIENT_ID = "5db82511c47d4dd780e2fb1a4ed6a8db";
+export const REDIRECT_URI = `/spotify/callback`;
+export const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
+export const RESPONSE_TYPE = "token";
+export const SCOPES = [
+  "user-read-playback-state",
+  "user-modify-playback-state",
+  "user-read-currently-playing",
+  "streaming",
+  "playlist-read-private",
+  "playlist-read-collaborative",
+  "user-library-read",
+  "user-top-read",
+  "user-read-playback-position",
+  "user-read-recently-played",
+];
+
 export function setCachedToken(token: string) {
   window.localStorage.setItem("spotifyToken", token);
 }

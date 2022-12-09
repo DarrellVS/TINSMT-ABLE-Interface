@@ -184,6 +184,7 @@ export default function Dock() {
             justifyContent="center"
             bg="rgba(14, 18, 27, 0.8)"
             transition={"all 0.2s ease-in-out"}
+            pointerEvents="none"
           >
             <BsBoxArrowInDown size="1.5rem" />
           </Flex>

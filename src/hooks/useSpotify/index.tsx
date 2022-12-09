@@ -1,45 +1,49 @@
 import { useCallback, useEffect, useState } from "react";
 import {
+  AUTH_ENDPOINT,
+  CLIENT_ID,
   getCachedToken,
   getPlayerState,
   makeRequest,
+  REDIRECT_URI,
+  RESPONSE_TYPE,
+  SCOPES,
   toggleShuffleHelper,
 } from "./utils";
-
-const CLIENT_ID = "5db82511c47d4dd780e2fb1a4ed6a8db";
-const REDIRECT_URI = "http://localhost:3000/spotify/callback";
-const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
-const RESPONSE_TYPE = "token";
-const SCOPES = [
-  "user-read-playback-state",
-  "user-modify-playback-state",
-  "user-read-currently-playing",
-  "streaming",
-  "playlist-read-private",
-  "playlist-read-collaborative",
-  "user-library-read",
-  "user-top-read",
-  "user-read-playback-position",
-  "user-read-recently-played",
-];
 
 export default function useSpotify() {
   const [token, setToken] = useState<string>();
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout>();
   const [playerState, setPlayerState] = useState<any>();
+  const [tokenIntervalId, setTokenIntervalId] = useState<NodeJS.Timeout>();
   const isAuthed = token !== undefined;
 
   useEffect(() => {
-    const cachedToken = getCachedToken();
-    if (cachedToken) {
+    const interval = setInterval(() => {
+      const cachedToken = getCachedToken();
+      if (!cachedToken) return;
       setToken(cachedToken);
-    }
+    }, 5000);
+    setTokenIntervalId(interval);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
-  const getAuthUrl = () =>
-    `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPES.join(
-      "%20"
-    )}`;
+  useEffect(() => {
+    if (token && tokenIntervalId) {
+      clearInterval(tokenIntervalId);
+    }
+  }, [token, tokenIntervalId]);
+
+  const getAuthUrl = () => {
+    if (typeof window === "undefined" || !window) return "/";
+    const url = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${
+      window.location.origin + REDIRECT_URI
+    }&response_type=${RESPONSE_TYPE}&scope=${SCOPES.join("%20")}`;
+    return url;
+  };
 
   const logOut = useCallback(() => {
     window.localStorage.removeItem("token");
