@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import useHandleTouches from "../../hooks/HandleTouches";
 import { OutsideAlerter } from "../OutsideAlerter";
 import { Position } from "../Canvas/DrawingCanvas";
+import { theme } from "../../theme";
 
 const container = {
   hidden: { opacity: 0 },
@@ -102,7 +103,7 @@ export default function InteractiveArea() {
       h="100vh"
       position="absolute"
       zIndex={0}
-      background="linear-gradient(135deg, rgba(17,22,34,1) 0%, rgba(32,32,82,1) 100%)"
+      background={`linear-gradient(135deg, ${theme.colors.able[900]} 0%, ${theme.colors.able[800]} 100%)`}
     >
       {isHeld && (
         <OutsideAlerter cb={() => setIsHeld(false)}>

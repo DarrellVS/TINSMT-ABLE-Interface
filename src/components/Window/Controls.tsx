@@ -23,7 +23,7 @@ export default function Controls({
       zIndex="10"
       {...rest}
       gap="2rem"
-      bg="#0E121B"
+      bg="able.700"
       alignItems="center"
       justifyContent="center"
       roundedBottom="14px"

@@ -147,7 +147,7 @@ export default function Window({
             zIndex="9"
             background="rgba(0, 0, 0, 0.25)"
             height="100%"
-            bg="#0E121B"
+            bg="able.700"
           >
             {children}
           </Box>
