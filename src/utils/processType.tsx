@@ -5,12 +5,12 @@ import {
   BsMusicNote,
   BsPencil,
 } from "react-icons/bs";
-import DrawingCanvas from "../components/Canvas/DrawingCanvas";
-import Clock from "../components/Clock";
-import Weather from "../components/Weather";
+import DrawingCanvas from "../components/Widgets/DrawingCanvas";
+import Clock from "../components/Widgets/Clock";
+import Weather from "../components/Widgets/Weather";
 import { PROCESS_TYPES } from "../interfaces/Processes";
-import Calculator from "../components/Calculator";
-import Spotify from "../components/Spotify";
+import Calculator from "../components/Widgets/Calculator";
+import Spotify from "../components/Widgets/Spotify";
 
 const map = {
   [PROCESS_TYPES.WEATHER]: {

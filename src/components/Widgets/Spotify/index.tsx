@@ -1,15 +1,6 @@
-import {
-  Box,
-  Text,
-  Button,
-  Image,
-  Spinner,
-  Progress,
-  Flex,
-  IconButton,
-} from "@chakra-ui/react";
+import { Box, Text, Button, Image, Progress, Flex } from "@chakra-ui/react";
 import Link from "next/link";
-import React, { JSXElementConstructor, ReactElement } from "react";
+import React from "react";
 import {
   BsArrowRepeat,
   BsChevronLeft,
@@ -19,37 +10,8 @@ import {
   BsShuffle,
   BsVolumeMute,
 } from "react-icons/bs";
-import useSpotify from "../../hooks/useSpotify";
-
-function ControlButton({
-  icon,
-  isEnabled,
-  onClick,
-}: {
-  icon: ReactElement<any, string | JSXElementConstructor<any>>;
-  isEnabled?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <IconButton
-      aria-label="control button"
-      icon={icon}
-      size="lg"
-      _after={{
-        content: "''",
-        position: "absolute",
-        top: "-5px",
-        right: "-5px",
-        borderRadius: "50%",
-        bg: "green.300",
-        h: "10px",
-        w: "10px",
-        opacity: isEnabled ? 1 : 0,
-      }}
-      onClick={onClick}
-    />
-  );
-}
+import useSpotify from "../../../hooks/useSpotify";
+import ControlButton from "./ControlButton";
 
 export default function Spotify() {
   const {

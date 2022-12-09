@@ -1,12 +1,12 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
-import { Position } from "../../components/Canvas/DrawingCanvas";
-import { ProviderProps } from "../../interfaces";
+import { Position } from "../components/Widgets/DrawingCanvas";
+import { ProviderProps } from "../interfaces";
 import {
   AddProcessType,
   DeskProcesses,
   ProcessesProviderType,
-} from "../../interfaces/Processes";
-import { ContextNotReadyFunction } from "../../utils";
+} from "../interfaces/Processes";
+import { ContextNotReadyFunction } from "../utils";
 
 const ProcessesContext = createContext<ProcessesProviderType>({
   processes: [],

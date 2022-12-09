@@ -1,33 +1,6 @@
 import { Box, Text, Grid } from "@chakra-ui/react";
 import React, { useState } from "react";
-
-function CalcButton({
-  label,
-  onClick,
-}: {
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <Box
-      w="100%"
-      h="100%"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      cursor="pointer"
-      onClick={onClick}
-      py=".5rem"
-      bg="#1E2840"
-      _hover={{
-        background: "rgba(255, 255, 255, .1)",
-      }}
-      rounded="md"
-    >
-      {label}
-    </Box>
-  );
-}
+import CalcButton from "./CalculatorButton";
 
 export default function Calculator() {
   const [answer, setAnswer] = useState();

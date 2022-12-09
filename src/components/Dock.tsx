@@ -1,13 +1,13 @@
-import { Box, Flex, IconButton, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
-import { BsBoxArrowInDown, BsGear } from "react-icons/bs";
-import { useDock } from "../../context/DockProvider";
-import { useProcesses } from "../../context/Processes";
-import { PROCESS_TYPES } from "../../interfaces/Processes";
-import { getIconForProcessType } from "../../utils/processType";
-import ContextMenu from "../ContextMenu";
-import { OutsideAlerter } from "../OutsideAlerter";
-import SettingsModal from "../SettingsModal";
+import { BsBoxArrowInDown, BsFullscreen } from "react-icons/bs";
+import { useDock } from "../context/DockProvider";
+import { useProcesses } from "../context/Processes";
+import useFullscreen from "../hooks/useFullscreen";
+import { PROCESS_TYPES } from "../interfaces/Processes";
+import { getIconForProcessType } from "../utils/processType";
+import ContextMenu from "./System/ContextMenu";
+import { OutsideAlerter } from "./OutsideAlerter";
 
 interface ContextMenuControl {
   id: number;
@@ -15,13 +15,22 @@ interface ContextMenuControl {
 }
 
 export default function Dock() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { processes, addProcess } = useProcesses();
   const [contextMenuControls, setContextMenuControls] = useState<
     ContextMenuControl[]
   >([]);
   const types = Object.keys(PROCESS_TYPES);
   const { displayDropArea } = useDock();
+  const { isFullscreen, toggleFullscreen } = useFullscreen();
+  const [isFullscreenTooltipOpen, setIsFullscreenTooltipOpen] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsFullscreenTooltipOpen(false);
+    }, 3250);
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   const createProcess = useCallback(
     (type: PROCESS_TYPES) => {
@@ -139,14 +148,25 @@ export default function Dock() {
               );
             })}
 
-            <IconButton
-              aria-label="Settings"
-              icon={<BsGear />}
-              onClick={onOpen}
-              colorScheme={"gray"}
-              opacity={0.75}
-              size="lg"
-            />
+            {!isFullscreen && (
+              <Tooltip
+                isOpen={isFullscreenTooltipOpen}
+                label="Enter fullscreen!"
+                bg="blue.400"
+                px="1.25rem"
+                py=".5rem"
+                hasArrow
+              >
+                <IconButton
+                  icon={<BsFullscreen />}
+                  aria-label="Fullscreen"
+                  onClick={toggleFullscreen}
+                  colorScheme={"gray"}
+                  opacity={0.75}
+                  size="lg"
+                />
+              </Tooltip>
+            )}
           </Flex>
 
           <Flex
@@ -169,8 +189,6 @@ export default function Dock() {
           </Flex>
         </Box>
       </Flex>
-
-      <SettingsModal isOpen={isOpen} onClose={onClose} />
     </>
   );
 }

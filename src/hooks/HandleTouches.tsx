@@ -1,5 +1,5 @@
 import React, { RefObject, useCallback, useEffect, useState } from "react";
-import { Position } from "../components/Canvas/DrawingCanvas";
+import { Position } from "../components/Widgets/DrawingCanvas";
 
 export default function useHandleTouches(
   containerRef: RefObject<HTMLDivElement>,
