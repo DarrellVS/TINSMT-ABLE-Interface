@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { eventListenerManager } from "../utils/interactionWrapper";
+import { eventListenerManager } from "../utils/EventListenerHelpers";
 
 export default function useOutsideAlerter(ref: any, cb: () => void) {
   function handleClickOutside(event: MouseEvent | TouchEvent) {

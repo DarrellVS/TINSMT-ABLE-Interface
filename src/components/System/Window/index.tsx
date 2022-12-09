@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { useDock } from "../../../context/DockProvider";
 import { DeskProcess } from "../../../interfaces/Processes";
-import { getPositionForEvent } from "../../../utils/interactionWrapper";
+import { getPositionForEvent } from "../../../utils/EventListenerHelpers";
 import Draggable from "../Draggable";
 import Controls from "./Controls";
 

@@ -52,6 +52,7 @@ export default function useSpotify() {
     const returned = await getPlayerState(token);
 
     try {
+      // @ts-ignore
       const { data, status } = returned;
 
       if (status !== 200) {

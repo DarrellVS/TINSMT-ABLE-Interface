@@ -1,8 +1,8 @@
 import { Box } from "@chakra-ui/react";
 import React, { useRef } from "react";
-import useHandleTouches from "../../hooks/HandleTouches";
-import { OutsideAlerter } from "../OutsideAlerter";
-import { theme } from "../../theme";
+import useHandleTouches from "../../../hooks/HandleTouches";
+import { OutsideAlerter } from "../../OutsideAlerter";
+import { theme } from "../../../theme";
 import Buttons from "./Buttons";
 
 export default function InteractiveArea() {

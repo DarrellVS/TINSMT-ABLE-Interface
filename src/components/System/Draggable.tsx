@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { getPositionForEvent } from "../../utils/interactionWrapper";
+import { getPositionForEvent } from "../../utils/EventListenerHelpers";
 
 const defaultOptions = {
   axis: {

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Position } from "../Widgets/DrawingCanvas";
+import { Position } from "../../Widgets/DrawingCanvas";
 import MotionButton from "./MotionButton";
 
 const container = {

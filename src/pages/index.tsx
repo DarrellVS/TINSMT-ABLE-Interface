@@ -1,4 +1,4 @@
-import InteractiveArea from "../components/InteractiveArea";
+import InteractiveArea from "../components/System/InteractiveArea";
 import ProcessesManager from "../components/System/ProcessesManager";
 import Layout from "../components/Layout";
 
