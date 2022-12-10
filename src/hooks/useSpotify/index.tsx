@@ -19,11 +19,13 @@ export default function useSpotify() {
   const isAuthed = token !== undefined;
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const refreshFunc = () => {
       const cachedToken = getCachedToken();
       if (!cachedToken) return;
       setToken(cachedToken);
-    }, 5000);
+    };
+    refreshFunc();
+    const interval = setInterval(refreshFunc, 5000);
     setTokenIntervalId(interval);
 
     return () => {
@@ -54,7 +56,6 @@ export default function useSpotify() {
   const fetchPlayerData = useCallback(async () => {
     if (!token) return;
     const returned = await getPlayerState(token);
-
     try {
       // @ts-ignore
       const { data, status } = returned;

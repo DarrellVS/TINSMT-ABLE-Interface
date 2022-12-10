@@ -1,4 +1,12 @@
-import { Box, Text, Button, Image, Progress, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Button,
+  Image,
+  Progress,
+  Flex,
+  Spinner,
+} from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
 import {
@@ -15,12 +23,12 @@ import ControlButton from "./ControlButton";
 
 export default function Spotify() {
   const {
+    isAuthed,
     playerState,
     toggleShuffle,
     togglePlayPause,
     skip,
     getAuthUrl,
-    isAuthed,
     toggleRepeat,
   } = useSpotify();
 

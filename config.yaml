@@ -1,6 +1,6 @@
 name: "ABLE GUI"
 description: "GUI For Able Table"
-version: "1.0.2"
+version: "1.0.3"
 slug: "able_gui"
 init: false
 arch:
