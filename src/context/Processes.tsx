@@ -28,9 +28,27 @@ export default function ProcessesProvider({ children }: ProviderProps) {
     setProcesses((prev) =>
       prev.map((currProcess) => {
         if (currProcess.id === id) {
+          if (currProcess.isMinimizing) return currProcess;
+
+          setTimeout(() => {
+            setProcesses((prev) =>
+              prev.map((currProcess) => {
+                if (currProcess.id === id) {
+                  return {
+                    ...currProcess,
+                    isMinimizing: false,
+                  };
+                }
+
+                return currProcess;
+              })
+            );
+          }, 500);
+
           return {
             ...currProcess,
             isMinimized: state,
+            isMinimizing: true,
             isActive: false,
           };
         }
@@ -78,6 +96,7 @@ export default function ProcessesProvider({ children }: ProviderProps) {
           setActive: (isActive?: boolean) =>
             setActiveProcess(process.id, isActive),
           isActive: true,
+          isMinimizing: false,
         },
       ]);
     },

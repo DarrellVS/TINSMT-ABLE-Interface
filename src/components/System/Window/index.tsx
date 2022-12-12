@@ -30,11 +30,27 @@ export default function Window({
   const [isDragging, setIsDragging] = useState(false);
   const { displayDropArea, setDisplayDropArea } = useDock();
   const [shouldMinimizeOnRelease, setShouldMinimizeOnRelease] = useState(false);
+  const [startDragPosition, setStartDragPosition] = useState({
+    top: 0,
+    left: 0,
+  });
 
-  const onStart = useCallback(() => {
-    process.setActive(true);
-    setIsDragging(true);
-  }, [process]);
+  const onStart = useCallback(
+    (x: number, y: number) => {
+      process.setActive(true);
+      setIsDragging(true);
+
+      const { current } = draggableRef;
+      if (!current) return;
+
+      const { offsetLeft, offsetTop } = current;
+      setStartDragPosition({
+        top: offsetTop,
+        left: offsetLeft,
+      });
+    },
+    [process]
+  );
 
   const onMove = useCallback(
     (x: number, y: number) => {
@@ -66,7 +82,21 @@ export default function Window({
     process.minimize();
     setDisplayDropArea(false);
     setShouldMinimizeOnRelease(false);
-  }, [isDragging, shouldMinimizeOnRelease, process, setDisplayDropArea]);
+
+    const { current } = draggableRef;
+    if (!current) return;
+
+    setTimeout(() => {
+      current.style.left = `${startDragPosition.left}px`;
+      current.style.top = `${startDragPosition.top}px`;
+    }, 500);
+  }, [
+    isDragging,
+    shouldMinimizeOnRelease,
+    process,
+    setDisplayDropArea,
+    startDragPosition,
+  ]);
 
   return (
     <Draggable

@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 export interface AddProcessType {
   id: number;
   type: PROCESS_TYPES;
@@ -8,6 +6,7 @@ export interface AddProcessType {
   isMinimized: boolean;
   isMaximized: boolean;
   isActive: boolean;
+  isMinimizing: boolean;
 }
 
 export interface DeskProcess extends AddProcessType {

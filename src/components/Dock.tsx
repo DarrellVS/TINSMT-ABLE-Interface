@@ -49,6 +49,7 @@ export default function Dock() {
         isMinimized: false,
         isMaximized: false,
         isActive: false,
+        isMinimizing: false,
       });
     },
     [addProcess, processes]

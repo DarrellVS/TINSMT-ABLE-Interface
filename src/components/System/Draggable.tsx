@@ -23,7 +23,7 @@ export default function Draggable({
       x?: boolean;
       y?: boolean;
     };
-    onStart?: () => void;
+    onStart?: (x: number, y: number) => void;
     onMove?: (x: number, y: number) => void;
     onEnd?: () => void;
   };
@@ -45,7 +45,7 @@ export default function Draggable({
       const y = clientY - offsetTop;
 
       if (opts?.onStart) {
-        opts.onStart();
+        opts.onStart(clientX, clientY);
       }
 
       const handleMouseMove = (e: MouseEvent | TouchEvent) => {
