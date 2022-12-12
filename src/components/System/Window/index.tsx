@@ -8,8 +8,8 @@ import React, {
   useState,
 } from "react";
 import { useDock } from "../../../context/DockProvider";
+import useWindowActivity from "../../../hooks/useWindowActivity";
 import { DeskProcess } from "../../../interfaces/Processes";
-import { getPositionForEvent } from "../../../utils/EventListenerHelpers";
 import Draggable from "../Draggable";
 import Controls from "./Controls";
 
@@ -34,6 +34,7 @@ export default function Window({
     top: 0,
     left: 0,
   });
+  const { updateState, getProcessState } = useWindowActivity();
 
   const onStart = useCallback(
     (x: number, y: number) => {
@@ -72,9 +73,21 @@ export default function Window({
     [setDisplayDropArea]
   );
 
-  const onEnd = useCallback(() => {
-    setIsDragging(false);
-  }, []);
+  const onEnd = useCallback(
+    (x: number, y: number) => {
+      setIsDragging(false);
+
+      const { current } = draggableRef;
+      if (!current) return;
+
+      const { offsetLeft, offsetTop } = current;
+      updateState({
+        type: process.type,
+        position: { x: offsetLeft, y: offsetTop },
+      });
+    },
+    [process.type, updateState]
+  );
 
   useEffect(() => {
     if (isDragging || !shouldMinimizeOnRelease) return;
@@ -97,6 +110,19 @@ export default function Window({
     setDisplayDropArea,
     startDragPosition,
   ]);
+
+  useEffect(() => {
+    const { current } = draggableRef;
+    if (!current) return;
+
+    const { x, y } = getProcessState(process.type)?.position || {
+      x: 0,
+      y: 0,
+    };
+
+    current.style.left = `${x}px`;
+    current.style.top = `${y}px`;
+  }, [getProcessState, process.type]);
 
   return (
     <Draggable

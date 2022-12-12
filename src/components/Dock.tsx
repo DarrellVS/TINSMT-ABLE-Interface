@@ -15,7 +15,7 @@ interface ContextMenuControl {
 }
 
 export default function Dock() {
-  const { processes, addProcess } = useProcesses();
+  const { processes, createProcess } = useProcesses();
   const [contextMenuControls, setContextMenuControls] = useState<
     ContextMenuControl[]
   >([]);
@@ -31,29 +31,6 @@ export default function Dock() {
 
     return () => clearTimeout(timeout);
   }, []);
-
-  const createProcess = useCallback(
-    (type: PROCESS_TYPES) => {
-      if (processes.some((process) => process.type === type)) return;
-
-      const highestProcessId = processes.reduce(
-        (prev, curr) => (prev > curr.id ? prev : curr.id),
-        0
-      );
-
-      addProcess({
-        id: highestProcessId + 1,
-        type,
-        name: type,
-        icon: getIconForProcessType(type),
-        isMinimized: false,
-        isMaximized: false,
-        isActive: false,
-        isMinimizing: false,
-      });
-    },
-    [addProcess, processes]
-  );
 
   useEffect(() => {
     setContextMenuControls(

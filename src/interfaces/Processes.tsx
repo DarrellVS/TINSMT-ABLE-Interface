@@ -4,7 +4,6 @@ export interface AddProcessType {
   name: string;
   icon: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   isMinimized: boolean;
-  isMaximized: boolean;
   isActive: boolean;
   isMinimizing: boolean;
 }
@@ -20,6 +19,7 @@ export type DeskProcesses = DeskProcess[];
 export interface ProcessesProviderType {
   processes: DeskProcesses;
   addProcess: (process: AddProcessType) => void;
+  createProcess: (type: PROCESS_TYPES) => void;
 }
 
 export enum PROCESS_TYPES {

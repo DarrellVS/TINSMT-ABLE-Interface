@@ -25,7 +25,7 @@ export default function Draggable({
     };
     onStart?: (x: number, y: number) => void;
     onMove?: (x: number, y: number) => void;
-    onEnd?: () => void;
+    onEnd?: (x: number, y: number) => void;
   };
 }) {
   const opts = useMemo(() => ({ ...defaultOptions, ...options }), [options]);
@@ -78,9 +78,13 @@ export default function Draggable({
         }
       };
 
-      const handleMouseUp = () => {
+      const handleMouseUp = (e: MouseEvent | TouchEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
         if (opts?.onEnd) {
-          opts.onEnd();
+          const { clientX, clientY } = getPositionForEvent(e);
+          opts.onEnd(clientX, clientY);
         }
 
         window.removeEventListener("mousemove", handleMouseMove);

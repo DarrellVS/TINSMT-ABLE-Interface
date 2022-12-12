@@ -1,16 +1,26 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
-import { Position } from "../components/Widgets/DrawingCanvas";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import useWindowActivity, { ProcessState } from "../hooks/useWindowActivity";
 import { ProviderProps } from "../interfaces";
 import {
   AddProcessType,
   DeskProcesses,
   ProcessesProviderType,
+  PROCESS_TYPES,
 } from "../interfaces/Processes";
 import { ContextNotReadyFunction } from "../utils";
+import { getIconForProcessType } from "../utils/processType";
 
 const ProcessesContext = createContext<ProcessesProviderType>({
   processes: [],
   addProcess: ContextNotReadyFunction,
+  createProcess: ContextNotReadyFunction,
 });
 
 export function useProcesses() {
@@ -19,50 +29,67 @@ export function useProcesses() {
 
 export default function ProcessesProvider({ children }: ProviderProps) {
   const [processes, setProcesses] = useState<DeskProcesses>([]);
+  const { readCachedProcesses, saveState, updateState } = useWindowActivity();
+  const isInitRef = useRef(false);
 
   const closeProcess = useCallback((id: number) => {
     setProcesses((prev) => prev.filter((currProcess) => currProcess.id !== id));
   }, []);
 
-  const minimizeProcess = useCallback((id: number, state: boolean = true) => {
-    setProcesses((prev) =>
-      prev.map((currProcess) => {
-        if (currProcess.id === id) {
-          if (currProcess.isMinimizing) return currProcess;
+  const minimizeProcess = useCallback(
+    (id: number, state: boolean = true) => {
+      setProcesses((prev) =>
+        prev.map((currProcess) => {
+          if (currProcess.id === id) {
+            if (currProcess.isMinimizing) return currProcess;
 
-          setTimeout(() => {
-            setProcesses((prev) =>
-              prev.map((currProcess) => {
-                if (currProcess.id === id) {
-                  return {
-                    ...currProcess,
-                    isMinimizing: false,
-                  };
-                }
+            setTimeout(() => {
+              setProcesses((prev) =>
+                prev.map((currProcess) => {
+                  if (currProcess.id === id) {
+                    return {
+                      ...currProcess,
+                      isMinimizing: false,
+                    };
+                  }
 
-                return currProcess;
-              })
-            );
-          }, 500);
+                  return currProcess;
+                })
+              );
+            }, 500);
 
-          return {
-            ...currProcess,
-            isMinimized: state,
-            isMinimizing: true,
-            isActive: false,
-          };
-        }
+            updateState({
+              type: currProcess.type,
+              isMinimized: state,
+              isActive: false,
+            });
 
-        return currProcess;
-      })
-    );
-  }, []);
+            return {
+              ...currProcess,
+              isMinimized: state,
+              isMinimizing: true,
+              isActive: false,
+            };
+          }
+
+          return currProcess;
+        })
+      );
+    },
+    [updateState]
+  );
 
   const setActiveProcess = useCallback(
     (id: number, isActive: boolean = true) => {
       setProcesses((prev) =>
         prev.map((currProcess) => {
           if (currProcess.id === id) {
+            updateState({
+              type: currProcess.type,
+              isMinimized: false,
+              isActive,
+            });
+
             return {
               ...currProcess,
               isActive,
@@ -79,11 +106,13 @@ export default function ProcessesProvider({ children }: ProviderProps) {
         })
       );
     },
-    []
+    [updateState]
   );
 
   const addProcess = useCallback(
     (process: AddProcessType) => {
+      console.log(process.id);
+
       setProcesses((prev) => [
         ...prev.map((currProcess) => ({
           ...currProcess,
@@ -103,11 +132,62 @@ export default function ProcessesProvider({ children }: ProviderProps) {
     [closeProcess, minimizeProcess, setActiveProcess]
   );
 
+  const createProcess = useCallback(
+    (
+      type: PROCESS_TYPES,
+      isMinimized: boolean = false,
+      isActive: boolean = false,
+      providedId: number = 69
+    ) => {
+      if (processes.some((process) => process.type === type)) return;
+
+      const id = providedId
+        ? providedId
+        : processes.reduce(
+            (prev, curr) => (prev > curr.id ? prev : curr.id),
+            0
+          );
+      console.log("create", id);
+
+      addProcess({
+        id,
+        type,
+        name: type,
+        icon: getIconForProcessType(type),
+        isMinimized,
+        isActive,
+        isMinimizing: false,
+      });
+
+      saveState({
+        type: type,
+        isMinimized,
+        isActive,
+        position: {
+          x: 0,
+          y: 0,
+        },
+      });
+    },
+    [addProcess, processes, saveState]
+  );
+
+  useEffect(() => {
+    if (isInitRef.current) return;
+    isInitRef.current = true;
+    const cachedProcesses = readCachedProcesses();
+
+    cachedProcesses.forEach((process: ProcessState, index: number) => {
+      createProcess(process.type, process.isMinimized, process.isActive, index);
+    });
+  }, [createProcess, processes, readCachedProcesses]);
+
   return (
     <ProcessesContext.Provider
       value={{
         processes,
         addProcess,
+        createProcess,
       }}
     >
       {children}
