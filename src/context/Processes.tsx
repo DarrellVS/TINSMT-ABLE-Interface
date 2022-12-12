@@ -129,7 +129,6 @@ export default function ProcessesProvider({ children }: ProviderProps) {
       })),
       {
         ...process,
-        isActive: true,
         isMinimizing: false,
       },
     ]);

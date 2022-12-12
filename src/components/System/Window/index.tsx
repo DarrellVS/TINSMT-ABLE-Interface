@@ -101,6 +101,13 @@ export default function Window({
     const { current } = draggableRef;
     if (!current) return;
 
+    updateState({
+      type: process.type,
+      position: { x: startDragPosition.left, y: startDragPosition.top },
+      isActive: false,
+      isMinimized: true,
+    });
+
     setTimeout(() => {
       current.style.left = `${startDragPosition.left}px`;
       current.style.top = `${startDragPosition.top}px`;
@@ -112,6 +119,7 @@ export default function Window({
     setDisplayDropArea,
     startDragPosition,
     minimizeProcess,
+    updateState,
   ]);
 
   useEffect(() => {
