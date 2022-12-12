@@ -28,7 +28,7 @@ export default function Spotify() {
     toggleShuffle,
     togglePlayPause,
     skip,
-    getAuthUrl,
+    authUrl,
     toggleRepeat,
   } = useSpotify();
 
@@ -123,7 +123,7 @@ export default function Spotify() {
           <Text p="2rem">Nothing is playing!</Text>
         )
       ) : (
-        <Link href={getAuthUrl()} target="_blank">
+        <Link href={authUrl} target="_blank">
           <Button>Login to Spotify</Button>
         </Link>
       )}

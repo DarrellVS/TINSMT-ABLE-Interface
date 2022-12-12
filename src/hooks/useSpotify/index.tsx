@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AUTH_ENDPOINT,
   CLIENT_ID,
@@ -39,13 +39,13 @@ export default function useSpotify() {
     }
   }, [token, tokenIntervalId]);
 
-  const getAuthUrl = () => {
+  const authUrl = useMemo(() => {
     if (typeof window === "undefined" || !window) return "/";
     const url = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${
       window.location.origin + REDIRECT_URI
     }&response_type=${RESPONSE_TYPE}&scope=${SCOPES.join("%20")}`;
     return url;
-  };
+  }, []);
 
   const logOut = useCallback(() => {
     window.localStorage.removeItem("token");
@@ -133,7 +133,7 @@ export default function useSpotify() {
   }, [token, setPlayerState]);
 
   return {
-    getAuthUrl,
+    authUrl,
     setToken,
     isAuthed,
     logOut,
