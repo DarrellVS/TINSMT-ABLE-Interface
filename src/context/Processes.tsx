@@ -9,7 +9,7 @@ import React, {
 import useWindowActivity, { ProcessState } from "../hooks/useWindowActivity";
 import { ProviderProps } from "../interfaces";
 import {
-  AddProcessType,
+  DeskProcess,
   DeskProcesses,
   ProcessesProviderType,
   PROCESS_TYPES,
@@ -21,6 +21,9 @@ const ProcessesContext = createContext<ProcessesProviderType>({
   processes: [],
   addProcess: ContextNotReadyFunction,
   createProcess: ContextNotReadyFunction,
+  closeProcess: ContextNotReadyFunction,
+  minimizeProcess: ContextNotReadyFunction,
+  setActiveProcess: ContextNotReadyFunction,
 });
 
 export function useProcesses() {
@@ -29,12 +32,21 @@ export function useProcesses() {
 
 export default function ProcessesProvider({ children }: ProviderProps) {
   const [processes, setProcesses] = useState<DeskProcesses>([]);
-  const { readCachedProcesses, saveState, updateState } = useWindowActivity();
+  const { readCachedProcesses, saveState, updateState, removeProcessState } =
+    useWindowActivity();
   const isInitRef = useRef(false);
 
-  const closeProcess = useCallback((id: number) => {
-    setProcesses((prev) => prev.filter((currProcess) => currProcess.id !== id));
-  }, []);
+  const closeProcess = useCallback(
+    (id: number) => {
+      const type = processes.find((process) => process.id === id)?.type;
+      if (type) removeProcessState(type);
+
+      setProcesses((prev) =>
+        prev.filter((currProcess) => currProcess.id !== id)
+      );
+    },
+    [processes, removeProcessState]
+  );
 
   const minimizeProcess = useCallback(
     (id: number, state: boolean = true) => {
@@ -109,28 +121,19 @@ export default function ProcessesProvider({ children }: ProviderProps) {
     [updateState]
   );
 
-  const addProcess = useCallback(
-    (process: AddProcessType) => {
-      console.log(process.id);
-
-      setProcesses((prev) => [
-        ...prev.map((currProcess) => ({
-          ...currProcess,
-          isActive: false,
-        })),
-        {
-          ...process,
-          minimize: (state?: boolean) => minimizeProcess(process.id, state),
-          close: () => closeProcess(process.id),
-          setActive: (isActive?: boolean) =>
-            setActiveProcess(process.id, isActive),
-          isActive: true,
-          isMinimizing: false,
-        },
-      ]);
-    },
-    [closeProcess, minimizeProcess, setActiveProcess]
-  );
+  const addProcess = useCallback((process: DeskProcess) => {
+    setProcesses((prev) => [
+      ...prev.map((currProcess) => ({
+        ...currProcess,
+        isActive: false,
+      })),
+      {
+        ...process,
+        isActive: true,
+        isMinimizing: false,
+      },
+    ]);
+  }, []);
 
   const createProcess = useCallback(
     (
@@ -147,7 +150,6 @@ export default function ProcessesProvider({ children }: ProviderProps) {
             (prev, curr) => (prev > curr.id ? prev : curr.id),
             0
           );
-      console.log("create", id);
 
       addProcess({
         id,
@@ -188,6 +190,9 @@ export default function ProcessesProvider({ children }: ProviderProps) {
         processes,
         addProcess,
         createProcess,
+        closeProcess,
+        minimizeProcess,
+        setActiveProcess,
       }}
     >
       {children}

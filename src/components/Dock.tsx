@@ -15,7 +15,8 @@ interface ContextMenuControl {
 }
 
 export default function Dock() {
-  const { processes, createProcess } = useProcesses();
+  const { processes, minimizeProcess, createProcess, closeProcess } =
+    useProcesses();
   const [contextMenuControls, setContextMenuControls] = useState<
     ContextMenuControl[]
   >([]);
@@ -31,6 +32,15 @@ export default function Dock() {
 
     return () => clearTimeout(timeout);
   }, []);
+
+  const create = useCallback(
+    (type: PROCESS_TYPES) => {
+      const highestId = Math.max(...processes.map((p) => p.id));
+
+      createProcess(type, false, false, highestId + 1);
+    },
+    [createProcess, processes]
+  );
 
   useEffect(() => {
     setContextMenuControls(
@@ -77,9 +87,9 @@ export default function Dock() {
                     icon={getIconForProcessType(type as PROCESS_TYPES)}
                     onClick={() => {
                       if (process) {
-                        process.minimize(!process.isMinimized);
+                        minimizeProcess(process.id, !process.isMinimized);
                       } else {
-                        createProcess(type as PROCESS_TYPES);
+                        create(type as PROCESS_TYPES);
                       }
                     }}
                     onContextMenu={(e) => {
@@ -115,7 +125,7 @@ export default function Dock() {
                           {
                             label: "Close",
                             onClick: () => {
-                              if (process) process.close();
+                              if (process) closeProcess(process.id);
                             },
                           },
                         ]}

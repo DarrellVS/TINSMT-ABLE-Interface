@@ -1,4 +1,4 @@
-export interface AddProcessType {
+export interface DeskProcess {
   id: number;
   type: PROCESS_TYPES;
   name: string;
@@ -8,18 +8,20 @@ export interface AddProcessType {
   isMinimizing: boolean;
 }
 
-export interface DeskProcess extends AddProcessType {
-  minimize: (state?: boolean) => void;
-  close: () => void;
-  setActive: (isActive?: boolean) => void;
-}
-
 export type DeskProcesses = DeskProcess[];
 
 export interface ProcessesProviderType {
   processes: DeskProcesses;
-  addProcess: (process: AddProcessType) => void;
-  createProcess: (type: PROCESS_TYPES) => void;
+  addProcess: (process: DeskProcess) => void;
+  createProcess: (
+    type: PROCESS_TYPES,
+    isMinimized?: boolean,
+    isActive?: boolean,
+    providedId?: number
+  ) => void;
+  closeProcess: (id: number) => void;
+  minimizeProcess: (id: number, state?: boolean) => void;
+  setActiveProcess: (id: number, isActive?: boolean) => void;
 }
 
 export enum PROCESS_TYPES {

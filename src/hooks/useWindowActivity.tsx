@@ -85,5 +85,24 @@ export default function useWindowActivity() {
     [readCachedProcesses]
   );
 
-  return { readCachedProcesses, saveState, updateState, getProcessState };
+  const removeProcessState = useCallback(
+    (type: PROCESS_TYPES) => {
+      const processes = readCachedProcesses();
+
+      const newProcesses = processes.filter((process: ProcessState) => {
+        return process.type !== type;
+      });
+
+      localStorage.setItem("processes", JSON.stringify(newProcesses));
+    },
+    [readCachedProcesses]
+  );
+
+  return {
+    readCachedProcesses,
+    saveState,
+    updateState,
+    getProcessState,
+    removeProcessState,
+  };
 }

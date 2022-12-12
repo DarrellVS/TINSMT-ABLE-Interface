@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useDock } from "../../../context/DockProvider";
+import { useProcesses } from "../../../context/Processes";
 import useWindowActivity from "../../../hooks/useWindowActivity";
 import { DeskProcess } from "../../../interfaces/Processes";
 import Draggable from "../Draggable";
@@ -35,10 +36,11 @@ export default function Window({
     left: 0,
   });
   const { updateState, getProcessState } = useWindowActivity();
+  const { setActiveProcess, minimizeProcess } = useProcesses();
 
   const onStart = useCallback(
     (x: number, y: number) => {
-      process.setActive(true);
+      setActiveProcess(process.id, true);
       setIsDragging(true);
 
       const { current } = draggableRef;
@@ -50,7 +52,7 @@ export default function Window({
         left: offsetLeft,
       });
     },
-    [process]
+    [process.id, setActiveProcess]
   );
 
   const onMove = useCallback(
@@ -92,7 +94,7 @@ export default function Window({
   useEffect(() => {
     if (isDragging || !shouldMinimizeOnRelease) return;
 
-    process.minimize();
+    minimizeProcess(process.id, true);
     setDisplayDropArea(false);
     setShouldMinimizeOnRelease(false);
 
@@ -109,6 +111,7 @@ export default function Window({
     process,
     setDisplayDropArea,
     startDragPosition,
+    minimizeProcess,
   ]);
 
   useEffect(() => {
