@@ -115,9 +115,13 @@ export default function Spotify() {
           <Text p="2rem">Nothing is playing!</Text>
         )
       ) : (
-        <Link href={authUrl} target="_blank">
-          <Button>Login to Spotify</Button>
-        </Link>
+        <Box p="2rem">
+          <Link href={authUrl} target="_blank">
+            <Button colorScheme="green" h="auto" py="1rem" px="2rem">
+              Login to Spotify
+            </Button>
+          </Link>
+        </Box>
       )}
     </Box>
   );

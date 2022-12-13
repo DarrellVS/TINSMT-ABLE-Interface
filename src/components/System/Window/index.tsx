@@ -42,11 +42,27 @@ export default function Window({
 
   const { touch } = useSystem();
 
-  const handleMouseDown = useCallback(
-    (e: MouseEvent | TouchEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
+  const onStart = useCallback(
+    (x: number, y: number) => {
+      if (!touch.enabled) return;
 
+      setActiveProcess(process.id, true);
+      setIsDragging(true);
+
+      const { current } = draggableRef;
+      if (!current) return;
+
+      const { offsetLeft, offsetTop } = current;
+      setStartDragPosition({
+        top: offsetTop,
+        left: offsetLeft,
+      });
+    },
+    [process.id, setActiveProcess, touch.enabled]
+  );
+
+  const onMove = useCallback(
+    (x: number, y: number) => {
       if (!touch.enabled) return;
 
       const dock = document.getElementById("window-dock");
@@ -59,97 +75,31 @@ export default function Window({
         ? dock.getBoundingClientRect()
         : { left: 0, top: 0, width: 0, height: 0 };
 
+      const displayMinimize = x > dL && x < dL + dW && y > dT && y < dT + dH;
+
+      setShouldMinimizeOnRelease(displayMinimize);
+      setDisplayDropArea(displayMinimize);
+    },
+    [setDisplayDropArea, touch.enabled]
+  );
+
+  const onEnd = useCallback(
+    (x: number, y: number) => {
+      if (!touch.enabled) return;
+
+      setIsDragging(false);
+
       const { current } = draggableRef;
       if (!current) return;
 
-      const { clientX, clientY } = getPositionForEvent(e);
       const { offsetLeft, offsetTop } = current;
-
-      const x = clientX - offsetLeft;
-      const y = clientY - offsetTop;
-
-      setActiveProcess(process.id, true);
-      setIsDragging(true);
-
-      setStartDragPosition({
-        top: offsetTop,
-        left: offsetLeft,
+      updateState({
+        type: process.type,
+        position: { x: offsetLeft, y: offsetTop },
       });
-
-      const handleMouseMove = (e: MouseEvent | TouchEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const { clientX, clientY } = getPositionForEvent(e);
-
-        // Keep element within bounds
-        const { bottom, height, width } = current.getBoundingClientRect();
-        const newY =
-          bottom >= window.innerHeight
-            ? Math.max(0, Math.min(clientY - y, window.innerHeight - height))
-            : Math.max(0, Math.min(clientY - y, window.innerHeight));
-
-        const newX =
-          clientX + width >= window.innerWidth
-            ? Math.max(0, Math.min(clientX - x, window.innerWidth - width))
-            : Math.max(0, Math.min(clientX - x, window.innerWidth));
-
-        current.style.left = `${newX}px`;
-        current.style.top = `${newY}px`;
-
-        const displayMinimize =
-          clientX > dL &&
-          clientX < dL + dW &&
-          clientY > dT &&
-          clientY < dT + dH;
-        setShouldMinimizeOnRelease(displayMinimize);
-        setDisplayDropArea(displayMinimize);
-      };
-
-      const handleMouseUp = () => {
-        setIsDragging(false);
-
-        const { current } = draggableRef;
-        if (!current) return;
-
-        const { offsetLeft, offsetTop } = current;
-        updateState({
-          type: process.type,
-          position: { x: offsetLeft, y: offsetTop },
-        });
-
-        window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("mouseup", handleMouseUp);
-        window.removeEventListener("touchmove", handleMouseMove);
-        window.removeEventListener("touchend", handleMouseUp);
-      };
-
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-      window.addEventListener("touchmove", handleMouseMove);
-      window.addEventListener("touchend", handleMouseUp);
     },
-    [
-      process.id,
-      process.type,
-      setActiveProcess,
-      setDisplayDropArea,
-      touch.enabled,
-      updateState,
-    ]
+    [process.type, touch.enabled, updateState]
   );
-
-  useEffect(() => {
-    const { current } = handleRef || draggableRef;
-    if (!current) return;
-
-    current.addEventListener("mousedown", handleMouseDown);
-    current.addEventListener("touchstart", handleMouseDown);
-    return () => {
-      current.removeEventListener("mousedown", handleMouseDown);
-      current.removeEventListener("touchstart", handleMouseDown);
-    };
-  });
 
   useEffect(() => {
     if (isDragging || !shouldMinimizeOnRelease) return;
@@ -196,42 +146,50 @@ export default function Window({
   }, [getProcessState, process.type]);
 
   return (
-    <Box
-      ref={draggableRef}
-      position="absolute"
-      userSelect={process.isActive ? "none" : "auto"}
-      pointerEvents={process.isMinimized ? "none" : "auto"}
-      zIndex={process.isActive ? "10" : "3"}
-      opacity={isDragging && displayDropArea ? "0.5" : "1"}
-      transition="opacity 0.2s ease-in-out"
-      boxShadow={
-        process.isActive ? "5px 5px 20px rgba(255, 255, 255, 0.05)" : "none"
-      }
-      rounded="14px"
-      overflowY="hidden"
+    <Draggable
+      draggableRef={draggableRef}
+      handleRef={handleRef}
+      options={{ onStart, onMove, onEnd }}
     >
-      <motion.div
-        variants={variants}
-        initial="default"
-        animate={process.isMinimized ? "minimized" : "default"}
-        style={{
-          height: "100%",
-        }}
+      <Box
+        ref={draggableRef}
+        position="absolute"
+        userSelect={process.isActive ? "none" : "auto"}
+        pointerEvents={process.isMinimized || !touch.enabled ? "none" : "auto"}
+        zIndex={process.isActive ? "10" : "3"}
+        opacity={isDragging && displayDropArea ? "0.5" : "1"}
+        transition="opacity 0.2s ease-in-out"
+        boxShadow={
+          process.isActive && touch.enabled
+            ? "5px 5px 20px rgba(255, 255, 255, 0.05)"
+            : "none"
+        }
+        rounded="14px"
+        overflowY="hidden"
       >
-        <Grid templateRows="auto auto" height="100%">
-          <Box
-            roundedTop="14px"
-            overflow="hidden"
-            zIndex="9"
-            background="rgba(0, 0, 0, 0.25)"
-            height="100%"
-            bg="able.700"
-          >
-            {children}
-          </Box>
-          <Controls navRef={handleRef} />
-        </Grid>
-      </motion.div>
-    </Box>
+        <motion.div
+          variants={variants}
+          initial="default"
+          animate={process.isMinimized ? "minimized" : "default"}
+          style={{
+            height: "100%",
+          }}
+        >
+          <Grid templateRows="auto auto" height="100%">
+            <Box
+              roundedTop="14px"
+              overflow="hidden"
+              zIndex="9"
+              background="rgba(0, 0, 0, 0.25)"
+              height="100%"
+              bg="able.700"
+            >
+              {children}
+            </Box>
+            <Controls navRef={handleRef} />
+          </Grid>
+        </motion.div>
+      </Box>
+    </Draggable>
   );
 }

@@ -53,9 +53,6 @@ export default function useHandleTouches(
 
   const mouseDownHandler = useCallback(
     (event: MouseEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-
       if (touch.enabled) return;
 
       const duration = options?.duration || 500;
@@ -78,9 +75,6 @@ export default function useHandleTouches(
 
   const mouseUpHandler = useCallback(
     (event: MouseEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-
       clearTimeout(mouseHoldTimeout);
       setIsTouch(false);
     },
@@ -89,9 +83,6 @@ export default function useHandleTouches(
 
   const mouseMoveHandler = useCallback(
     (event: MouseEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-
       if (touch.enabled || isTouch) return;
 
       setCurrentMousePos({
@@ -104,9 +95,6 @@ export default function useHandleTouches(
 
   const touchStartHandler = useCallback(
     (event: TouchEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-
       if (!touch.enabled) return;
 
       setIsTouch(true);
@@ -128,9 +116,6 @@ export default function useHandleTouches(
 
   const touchEndHandler = useCallback(
     (event: TouchEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-
       if (!touch.enabled) return;
 
       event.preventDefault();
@@ -142,9 +127,6 @@ export default function useHandleTouches(
 
   const touchMoveHandler = useCallback(
     (event: TouchEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-
       if (!touch.enabled) return;
 
       setCurrentMousePos({
