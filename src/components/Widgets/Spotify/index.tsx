@@ -37,7 +37,7 @@ export default function Spotify() {
                 h="12rem"
                 w="25rem"
                 objectFit="cover"
-                filter="brightness(0.5) blur(3px)"
+                filter="brightness(0.4)"
               />
 
               <Box position="absolute" left="0" top="0" right="0" p="1.25rem">
@@ -79,7 +79,7 @@ export default function Spotify() {
               justifyContent="space-between"
               alignItems="center"
               p="1.25rem"
-              pb=".25rem"
+              pb="1rem"
             >
               <ControlButton
                 icon={<BsShuffle />}
