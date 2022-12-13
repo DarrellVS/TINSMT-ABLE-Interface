@@ -8,6 +8,7 @@ import { PROCESS_TYPES } from "../interfaces/Processes";
 import { getIconForProcessType } from "../utils/processType";
 import ContextMenu from "./System/ContextMenu";
 import { OutsideAlerter } from "./OutsideAlerter";
+import { useSystem } from "../context/SystemProvider";
 
 interface ContextMenuControl {
   id: number;
@@ -24,6 +25,7 @@ export default function Dock() {
   const { displayDropArea } = useDock();
   const { isFullscreen, toggleFullscreen } = useFullscreen();
   const [isFullscreenTooltipOpen, setIsFullscreenTooltipOpen] = useState(true);
+  const { touch } = useSystem();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -72,6 +74,10 @@ export default function Dock() {
             p="1rem"
             rounded="14px"
             id="window-dock"
+            transform={
+              touch.enabled ? "translateY(0)" : "translateY(calc(100% + 20px))"
+            }
+            transition="transform 0.25s ease-in-out"
           >
             {types.sort().map((type) => {
               const process = processes.find(

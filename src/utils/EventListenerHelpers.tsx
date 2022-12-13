@@ -8,6 +8,9 @@ interface Props {
 }
 
 export function getPositionForEvent(e: MouseEvent | TouchEvent) {
+  e.preventDefault();
+  e.stopPropagation();
+
   if (e instanceof MouseEvent) {
     return { clientX: e.clientX, clientY: e.clientY };
   } else {

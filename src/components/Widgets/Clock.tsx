@@ -1,8 +1,10 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import { useSystem } from "../../context/SystemProvider";
 
 export default function Clock() {
   const [date, setDate] = useState(new Date());
+  const { touch } = useSystem();
 
   function refreshClock() {
     setDate(new Date());
@@ -23,7 +25,7 @@ export default function Clock() {
   const year = date.getFullYear();
 
   return (
-    <Box p="3rem" pb="1rem">
+    <Box p="3rem" pb="3rem">
       <Flex justifyContent="space-between" alignItems="center" gap="3rem">
         <Flex
           direction="column"

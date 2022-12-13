@@ -16,6 +16,7 @@ import {
 } from "../interfaces/Processes";
 import { ContextNotReadyFunction } from "../utils";
 import { getIconForProcessType } from "../utils/processType";
+import { useSystem } from "./SystemProvider";
 
 const ProcessesContext = createContext<ProcessesProviderType>({
   processes: [],
@@ -35,9 +36,12 @@ export default function ProcessesProvider({ children }: ProviderProps) {
   const { readCachedProcesses, saveState, updateState, removeProcessState } =
     useWindowActivity();
   const isInitRef = useRef(false);
+  const { touch } = useSystem();
 
   const closeProcess = useCallback(
     (id: number) => {
+      if (!touch.enabled) return;
+
       const type = processes.find((process) => process.id === id)?.type;
       if (type) removeProcessState(type);
 
@@ -45,11 +49,13 @@ export default function ProcessesProvider({ children }: ProviderProps) {
         prev.filter((currProcess) => currProcess.id !== id)
       );
     },
-    [processes, removeProcessState]
+    [processes, removeProcessState, touch.enabled]
   );
 
   const minimizeProcess = useCallback(
     (id: number, state: boolean = true) => {
+      if (!touch.enabled) return;
+
       setProcesses((prev) =>
         prev.map((currProcess) => {
           if (currProcess.id === id) {
@@ -88,11 +94,13 @@ export default function ProcessesProvider({ children }: ProviderProps) {
         })
       );
     },
-    [updateState]
+    [touch.enabled, updateState]
   );
 
   const setActiveProcess = useCallback(
     (id: number, isActive: boolean = true) => {
+      if (!touch.enabled) return;
+
       setProcesses((prev) =>
         prev.map((currProcess) => {
           if (currProcess.id === id) {
@@ -118,7 +126,7 @@ export default function ProcessesProvider({ children }: ProviderProps) {
         })
       );
     },
-    [updateState]
+    [touch.enabled, updateState]
   );
 
   const addProcess = useCallback((process: DeskProcess) => {
@@ -141,6 +149,7 @@ export default function ProcessesProvider({ children }: ProviderProps) {
       isActive: boolean = false,
       providedId: number = 69
     ) => {
+      if (!touch.enabled) return;
       if (processes.some((process) => process.type === type)) return;
 
       const id = providedId
@@ -170,7 +179,7 @@ export default function ProcessesProvider({ children }: ProviderProps) {
         },
       });
     },
-    [addProcess, processes, saveState]
+    [addProcess, processes, saveState, touch.enabled]
   );
 
   useEffect(() => {
