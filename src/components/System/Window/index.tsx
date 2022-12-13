@@ -44,6 +44,8 @@ export default function Window({
 
   const onStart = useCallback(
     (x: number, y: number) => {
+      if (!touch.enabled) return;
+
       setActiveProcess(process.id, true);
       setIsDragging(true);
 
@@ -56,11 +58,13 @@ export default function Window({
         left: offsetLeft,
       });
     },
-    [process.id, setActiveProcess]
+    [process.id, setActiveProcess, touch.enabled]
   );
 
   const onMove = useCallback(
     (x: number, y: number) => {
+      if (!touch.enabled) return;
+
       const dock = document.getElementById("window-dock");
       const {
         left: dL,
@@ -76,11 +80,13 @@ export default function Window({
       setShouldMinimizeOnRelease(displayMinimize);
       setDisplayDropArea(displayMinimize);
     },
-    [setDisplayDropArea]
+    [setDisplayDropArea, touch.enabled]
   );
 
   const onEnd = useCallback(
     (x: number, y: number) => {
+      if (!touch.enabled) return;
+
       setIsDragging(false);
 
       const { current } = draggableRef;
@@ -92,7 +98,7 @@ export default function Window({
         position: { x: offsetLeft, y: offsetTop },
       });
     },
-    [process.type, updateState]
+    [process.type, touch.enabled, updateState]
   );
 
   useEffect(() => {
