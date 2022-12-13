@@ -35,7 +35,8 @@ export default function Dock() {
 
   const create = useCallback(
     (type: PROCESS_TYPES) => {
-      const highestId = Math.max(...processes.map((p) => p.id));
+      const highestId =
+        processes.length > 0 ? Math.max(...processes.map((p) => p.id)) : 0;
 
       createProcess(type, false, false, highestId + 1);
     },

@@ -1,14 +1,18 @@
 import { Button } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { PROCESS_TYPES } from "../../../interfaces/Processes";
+import { getIconForProcessType } from "../../../utils/processType";
 
 export default function MotionButton({
-  title,
+  type,
   setIsHeld,
+  onClick,
   x,
   y,
 }: {
-  title: string;
+  type: PROCESS_TYPES;
   setIsHeld: (isHeld: boolean) => void;
+  onClick?: () => void;
   x: number;
   y: number;
 }) {
@@ -31,14 +35,14 @@ export default function MotionButton({
         colorScheme="blue"
         onClick={() => {
           setIsHeld(false);
-          console.log("ok");
+          onClick && onClick();
         }}
         onTouchEndCapture={() => {
           setIsHeld(false);
-          console.log("touch");
+          onClick && onClick();
         }}
       >
-        {title}
+        {getIconForProcessType(type)}
       </Button>
     </motion.div>
   );

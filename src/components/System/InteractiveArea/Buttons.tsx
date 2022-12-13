@@ -1,4 +1,7 @@
 import { motion } from "framer-motion";
+import { useCallback } from "react";
+import { useProcesses } from "../../../context/Processes";
+import { PROCESS_TYPES } from "../../../interfaces/Processes";
 import { Position } from "../../Widgets/DrawingCanvas";
 import MotionButton from "./MotionButton";
 
@@ -12,6 +15,44 @@ const container = {
   },
 };
 
+const max = 100;
+const min = 75;
+
+const posMap = [
+  {
+    x: -max,
+    y: 0,
+  },
+  {
+    x: -min,
+    y: -min,
+  },
+  {
+    x: 0,
+    y: -max,
+  },
+  {
+    x: min,
+    y: -min,
+  },
+  {
+    x: max,
+    y: 0,
+  },
+  {
+    x: min,
+    y: min,
+  },
+  {
+    x: 0,
+    y: max,
+  },
+  {
+    x: -min,
+    y: min,
+  },
+];
+
 export default function MotionButtons({
   position,
   setIsHeld,
@@ -19,8 +60,18 @@ export default function MotionButtons({
   position: Position;
   setIsHeld: (isHeld: boolean) => void;
 }) {
-  const max = 100;
-  const min = 75;
+  const { processes, minimizeProcess, createProcess } = useProcesses();
+  const types = Object.keys(PROCESS_TYPES);
+
+  const create = useCallback(
+    (type: PROCESS_TYPES) => {
+      const highestId =
+        processes.length > 0 ? Math.max(...processes.map((p) => p.id)) : 0;
+
+      createProcess(type, false, false, highestId + 1);
+    },
+    [createProcess, processes]
+  );
 
   return (
     <motion.div
@@ -33,14 +84,22 @@ export default function MotionButtons({
       initial="hidden"
       animate="show"
     >
-      <MotionButton title="1" setIsHeld={setIsHeld} x={0} y={-max} />
-      <MotionButton title="2" setIsHeld={setIsHeld} x={min} y={-min} />
-      <MotionButton title="3" setIsHeld={setIsHeld} x={max} y={0} />
-      <MotionButton title="4" setIsHeld={setIsHeld} x={min} y={min} />
-      <MotionButton title="5" setIsHeld={setIsHeld} x={0} y={max} />
-      <MotionButton title="6" setIsHeld={setIsHeld} x={-min} y={min} />
-      <MotionButton title="7" setIsHeld={setIsHeld} x={-max} y={0} />
-      <MotionButton title="8" setIsHeld={setIsHeld} x={-min} y={-min} />
+      {types.sort().map((type, index) => {
+        const process = processes.find((p) => p.type === type);
+        const onClick = process
+          ? () => minimizeProcess(process.id, !process.isMinimized)
+          : () => create(type as PROCESS_TYPES);
+        return (
+          <MotionButton
+            key={type}
+            type={type as PROCESS_TYPES}
+            setIsHeld={setIsHeld}
+            onClick={onClick}
+            x={posMap[index].x}
+            y={posMap[index].y}
+          />
+        );
+      })}
     </motion.div>
   );
 }
