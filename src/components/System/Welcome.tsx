@@ -41,6 +41,7 @@ export default function Welcome({ children }: { children: React.ReactNode }) {
         transition="opacity 1s"
         zIndex="1000000"
         pointerEvents="none"
+        display={progress === PROGRESS.EXIT ? "none" : "flex"}
       >
         <Image src="/logo/svg.svg" alt="Logo" w="40rem" />
       </Flex>

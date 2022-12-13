@@ -1,9 +1,8 @@
-import { Box, Flex, IconButton, Tooltip } from "@chakra-ui/react";
+import { Box, Flex, IconButton } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
-import { BsBoxArrowInDown, BsFullscreen } from "react-icons/bs";
+import { BsBoxArrowInDown } from "react-icons/bs";
 import { useDock } from "../context/DockProvider";
 import { useProcesses } from "../context/Processes";
-import useFullscreen from "../hooks/useFullscreen";
 import { PROCESS_TYPES } from "../interfaces/Processes";
 import { getIconForProcessType } from "../utils/processType";
 import ContextMenu from "./System/ContextMenu";
@@ -23,17 +22,7 @@ export default function Dock() {
   >([]);
   const types = Object.keys(PROCESS_TYPES);
   const { displayDropArea } = useDock();
-  const { isFullscreen, toggleFullscreen } = useFullscreen();
-  const [isFullscreenTooltipOpen, setIsFullscreenTooltipOpen] = useState(true);
   const { touch } = useSystem();
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsFullscreenTooltipOpen(false);
-    }, 3250);
-
-    return () => clearTimeout(timeout);
-  }, []);
 
   const create = useCallback(
     (type: PROCESS_TYPES) => {
@@ -142,26 +131,6 @@ export default function Dock() {
                 </Box>
               );
             })}
-
-            {!isFullscreen && (
-              <Tooltip
-                isOpen={isFullscreenTooltipOpen}
-                label="Enter fullscreen!"
-                bg="blue.400"
-                px="1.25rem"
-                py=".5rem"
-                hasArrow
-              >
-                <IconButton
-                  icon={<BsFullscreen />}
-                  aria-label="Fullscreen"
-                  onClick={toggleFullscreen}
-                  colorScheme={"gray"}
-                  opacity={0.75}
-                  size="lg"
-                />
-              </Tooltip>
-            )}
           </Flex>
 
           <Flex

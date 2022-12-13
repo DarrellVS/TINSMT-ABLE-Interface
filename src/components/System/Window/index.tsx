@@ -40,16 +40,6 @@ export default function Window({
   const { updateState, getProcessState } = useWindowActivity();
   const { setActiveProcess, minimizeProcess } = useProcesses();
 
-  const dock = document.getElementById("window-dock");
-  const {
-    left: dL,
-    top: dT,
-    width: dW,
-    height: dH,
-  } = dock
-    ? dock.getBoundingClientRect()
-    : { left: 0, top: 0, width: 0, height: 0 };
-
   const { touch } = useSystem();
 
   const handleMouseDown = useCallback(
@@ -58,6 +48,16 @@ export default function Window({
       e.stopPropagation();
 
       if (!touch.enabled) return;
+
+      const dock = document.getElementById("window-dock");
+      const {
+        left: dL,
+        top: dT,
+        width: dW,
+        height: dH,
+      } = dock
+        ? dock.getBoundingClientRect()
+        : { left: 0, top: 0, width: 0, height: 0 };
 
       const { current } = draggableRef;
       if (!current) return;
@@ -97,7 +97,11 @@ export default function Window({
         current.style.left = `${newX}px`;
         current.style.top = `${newY}px`;
 
-        const displayMinimize = x > dL && x < dL + dW && y > dT && y < dT + dH;
+        const displayMinimize =
+          clientX > dL &&
+          clientX < dL + dW &&
+          clientY > dT &&
+          clientY < dT + dH;
         setShouldMinimizeOnRelease(displayMinimize);
         setDisplayDropArea(displayMinimize);
       };
@@ -126,10 +130,6 @@ export default function Window({
       window.addEventListener("touchend", handleMouseUp);
     },
     [
-      dH,
-      dL,
-      dT,
-      dW,
       process.id,
       process.type,
       setActiveProcess,
