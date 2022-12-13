@@ -6,6 +6,7 @@ import ProcessesProvider from "../context/Processes";
 import DockProvider from "../context/DockProvider";
 import { theme } from "../theme";
 import PageHead from "../components/PageHead";
+import SystemProvider from "../context/SystemProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -13,13 +14,15 @@ export default function App({ Component, pageProps }: AppProps) {
       <PageHead />
       <ChakraProvider theme={theme}>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <DockProvider>
-          <ProcessesProvider>
-            <WeatherContextProvider>
-              <Component {...pageProps} />
-            </WeatherContextProvider>
-          </ProcessesProvider>
-        </DockProvider>
+        <SystemProvider>
+          <DockProvider>
+            <ProcessesProvider>
+              <WeatherContextProvider>
+                <Component {...pageProps} />
+              </WeatherContextProvider>
+            </ProcessesProvider>
+          </DockProvider>
+        </SystemProvider>
       </ChakraProvider>
     </>
   );
