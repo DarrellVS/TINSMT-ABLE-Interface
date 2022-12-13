@@ -32,7 +32,7 @@ export default function Calculator() {
   };
 
   return (
-    <Grid templateRows="2rem 4rem auto" p="2rem" pb="0">
+    <Grid templateRows="2rem 4rem auto" p="2rem">
       <Text fontWeight="bold" opacity={0.6} fontSize="20px">
         {input}
       </Text>
