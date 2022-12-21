@@ -9,7 +9,7 @@ import PageHead from "../components/PageHead";
 import SystemProvider from "../context/SystemProvider";
 import { MsalProvider } from "@azure/msal-react";
 import { PublicClientApplication } from "@azure/msal-browser";
-import { msalConfig } from "../components/Widgets/Calendar";
+import { msalConfig } from "../utils/msal";
 
 export default function App({ Component, pageProps }: AppProps) {
   const msalInstance = new PublicClientApplication(msalConfig);

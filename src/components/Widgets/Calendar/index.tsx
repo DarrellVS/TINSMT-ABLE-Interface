@@ -1,74 +1,82 @@
-import { PublicClientApplication } from "@azure/msal-browser";
-import { MsalProvider, useIsAuthenticated, useMsal } from "@azure/msal-react";
-import { Button } from "@chakra-ui/react";
-import { useState } from "react";
-
-export const msalConfig = {
-  auth: {
-    clientId: "9a730cca-abac-40e4-b94c-5df5c8e13243",
-    authority: "https://login.microsoftonline.com/consumers",
-    redirectUri: "http://localhost:3000/",
-  },
-  cache: {
-    cacheLocation: "sessionStorage", // This configures where your cache will be stored
-    storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
-  },
-};
-
-// Add scopes here for ID token to be used at Microsoft identity platform endpoints.
-export const loginRequest = {
-  scopes: ["User.Read"],
-};
-
-// Add the endpoints here for Microsoft Graph API services you'd like to use.
-export const graphConfig = {
-  graphMeEndpoint: "https://graph.microsoft.com/v1.0/me",
-};
+import { Box, Button, Flex, Grid, Spinner } from "@chakra-ui/react";
+import { CalendarType } from "../../../interfaces/msal";
+import {
+  GraphEndpoints,
+  useAccessToken,
+  useMsalAuth,
+  useMsGraph,
+} from "../../../utils/msal";
 
 export default function Calendar() {
-  const { instance, accounts, inProgress } = useMsal();
-  const [accessToken, setAccessToken] = useState(null);
+  const accessToken = useAccessToken();
+  const msalAuth = useMsalAuth();
 
-  const name = accounts[0] && accounts[0].name;
+  const me = useMsGraph({
+    accessToken,
+    endpoint: GraphEndpoints.me,
+  });
 
-  const handleLogin = () => {
-    instance.loginPopup(loginRequest).catch((e) => {
-      console.log(e);
-    });
-  };
+  const calendars = useMsGraph({
+    accessToken,
+    endpoint: GraphEndpoints.calendars,
+  });
 
-  const handleLogout = () => {
-    instance.logoutPopup({
-      postLogoutRedirectUri: "/",
-      mainWindowRedirectUri: "/", // redirects the top level app after logout
-    });
-  };
+  const calendarView = useMsGraph({
+    accessToken,
+    endpoint: GraphEndpoints.calendarView,
+  });
 
-  const requestAccessToken = () => {
-    const request = {
-      ...loginRequest,
-      account: accounts[0],
-    };
+  console.log(calendarView);
 
-    // Silently acquires an access token which is then attached to a request for Microsoft Graph data
-    instance
-      .acquireTokenSilent(request)
-      .then((response) => {
-        setAccessToken(response.accessToken);
-      })
-      .catch((e) => {
-        instance.acquireTokenPopup(request).then((response) => {
-          setAccessToken(response.accessToken);
-        });
-      });
-  };
+  // current datetime
+  const now = new Date();
+  // start of the day
+  const start = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  ).toISOString();
+  console.log("start", start);
 
-  const isAuthenticated = useIsAuthenticated();
-  console.log(isAuthenticated);
+  // end of the day
+  const end = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1
+  ).toISOString();
+  console.log("end", end);
 
   return (
-    <Button onClick={isAuthenticated ? handleLogout : handleLogin}>
-      {isAuthenticated ? "Logout" : "Login"}
-    </Button>
+    <Box p="2rem">
+      {!msalAuth.isAuthenticated ? (
+        <Button onClick={msalAuth.login}>Login</Button>
+      ) : calendars?.data?.value ? (
+        <>
+          <Grid templateColumns="auto auto">
+            <Flex direction="column" textAlign="left" gap="1rem">
+              {calendars.data.value.map((calendar: CalendarType) => (
+                <Box
+                  key={calendar.id}
+                  px="1rem"
+                  py=".75rem"
+                  bg="whiteAlpha.200"
+                  rounded="8px"
+                  cursor="pointer"
+                  _hover={{ bg: "whiteAlpha.300" }}
+                  _active={{ bg: "whiteAlpha.400" }}
+                  transition="background .1s ease-in-out"
+                  maxW="14rem"
+                >
+                  {calendar.name}
+                </Box>
+              ))}
+            </Flex>
+          </Grid>
+          <Button onClick={msalAuth.logout}>Logout</Button>
+        </>
+      ) : (
+        <Spinner />
+      )}
+    </Box>
   );
 }
