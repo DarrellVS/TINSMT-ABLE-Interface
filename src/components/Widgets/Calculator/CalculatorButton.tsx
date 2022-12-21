@@ -17,7 +17,8 @@ export default function CalcButton({
       cursor="pointer"
       onClick={onClick}
       py=".5rem"
-      bg="#1E2840"
+      bg="able.700"
+      filter="brightness(1.2)"
       _hover={{
         filter: "brightness(1.3)",
       }}

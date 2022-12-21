@@ -56,7 +56,7 @@ export default function Dock() {
       >
         <Box position="relative">
           <Flex
-            bg="#0E121B"
+            bg="able.700"
             alignItems="center"
             justifyContent="center"
             gap="1rem"

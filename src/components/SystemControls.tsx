@@ -25,7 +25,7 @@ export default function SystemControls() {
       position="absolute"
       right="20px"
       bottom="20px"
-      bg="#0E121B"
+      bg="able.700"
       rounded="14px"
       p="1rem"
       zIndex={9999}

@@ -55,7 +55,7 @@ export default function Calculator() {
       >
         <CalcButton label="C" onClick={handleClear} />
         <CalcButton label="←" onClick={handleBackspace} />
-        <Box bg="#1E2840" rounded="md"></Box>
+        <Box bg="able.700" filter="brightness(1.2)" rounded="md"></Box>
         <CalcButton label="÷" onClick={() => handleInput("/")} />
         <CalcButton label="7" onClick={() => handleInput("7")} />
         <CalcButton label="8" onClick={() => handleInput("8")} />
@@ -69,7 +69,7 @@ export default function Calculator() {
         <CalcButton label="2" onClick={() => handleInput("2")} />
         <CalcButton label="3" onClick={() => handleInput("3")} />
         <CalcButton label="+" onClick={() => handleInput("+")} />
-        <Box bg="#1E2840" rounded="md"></Box>
+        <Box bg="able.700" filter="brightness(1.2)" rounded="md"></Box>
         <CalcButton label="0" onClick={() => handleInput("0")} />
         <CalcButton label="." onClick={() => handleInput(".")} />
         <CalcButton label="=" onClick={handleEqual} />
