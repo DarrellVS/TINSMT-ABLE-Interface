@@ -11,10 +11,14 @@ export function getPositionForEvent(e: MouseEvent | TouchEvent) {
   e.preventDefault();
   e.stopPropagation();
 
-  if (e instanceof MouseEvent) {
-    return { clientX: e.clientX, clientY: e.clientY };
-  } else {
-    return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+  try {
+    if (e instanceof MouseEvent) {
+      return { clientX: e.clientX, clientY: e.clientY };
+    } else {
+      return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+    }
+  } catch (error) {
+    return { clientX: 0, clientY: 0 };
   }
 }
 

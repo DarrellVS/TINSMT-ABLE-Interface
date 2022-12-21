@@ -155,7 +155,7 @@ export default function Window({
         ref={draggableRef}
         position="absolute"
         userSelect={process.isActive ? "none" : "auto"}
-        pointerEvents={process.isMinimized || !touch.enabled ? "none" : "auto"}
+        pointerEvents={process.isMinimized ? "none" : "auto"}
         zIndex={process.isActive ? "10" : "3"}
         opacity={isDragging && displayDropArea ? "0.5" : "1"}
         transition="opacity 0.2s ease-in-out"
