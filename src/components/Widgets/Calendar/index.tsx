@@ -65,9 +65,8 @@ export default function Calendar() {
 
   useEffect(() => {
     if (!calendars) return;
-    if (!calendars.value) return;
 
-    fetchCalendarView(calendars.value[0].id);
+    fetchCalendarView(calendars[0].id);
   }, [calendars, fetchCalendarView]);
 
   return (
