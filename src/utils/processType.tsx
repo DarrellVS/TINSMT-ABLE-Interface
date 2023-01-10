@@ -1,5 +1,6 @@
 import {
   BsCalculator,
+  BsCalendar,
   BsClock,
   BsClouds,
   BsMusicNote,
@@ -11,6 +12,7 @@ import Weather from "../components/Widgets/Weather";
 import { PROCESS_TYPES } from "../interfaces/Processes";
 import Calculator from "../components/Widgets/Calculator";
 import Spotify from "../components/Widgets/Spotify";
+import Calendar from "../components/Widgets/Calendar";
 
 const map = {
   [PROCESS_TYPES.WEATHER]: {
@@ -32,6 +34,10 @@ const map = {
   [PROCESS_TYPES.SPOTIFY]: {
     element: <Spotify />,
     icon: <BsMusicNote />,
+  },
+  [PROCESS_TYPES.CALENDAR]: {
+    element: <Calendar />,
+    icon: <BsCalendar />,
   },
 };
 

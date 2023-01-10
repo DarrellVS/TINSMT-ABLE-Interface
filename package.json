@@ -10,9 +10,13 @@
     "build-start": "next build && next start -p 3071"
   },
   "dependencies": {
+    "@azure/identity": "^3.1.2",
+    "@azure/msal-browser": "^2.32.1",
+    "@azure/msal-react": "^1.5.1",
     "@chakra-ui/react": "^2.4.1",
     "@emotion/react": "11",
     "@emotion/styled": "11",
+    "@microsoft/microsoft-graph-client": "^3.0.4",
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
     "@types/react-canvas-draw": "^1.2.0",

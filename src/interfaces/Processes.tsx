@@ -30,6 +30,6 @@ export enum PROCESS_TYPES {
   CLOCK = "CLOCK",
   DRAW = "DRAW",
   SPOTIFY = "SPOTIFY",
-  // CALENDAR = "CALENDAR",
+  CALENDAR = "CALENDAR",
   // NOTES = "NOTES",
 }
