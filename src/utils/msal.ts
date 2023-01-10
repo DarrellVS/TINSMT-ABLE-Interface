@@ -21,15 +21,26 @@ export const loginRequest = {
 export enum GraphEndpoints {
   me = "https://graph.microsoft.com/v1.0/me",
   calendars = "https://graph.microsoft.com/v1.0/me/calendars",
-  calendarView = "https://graph.microsoft.com/v1.0/me/calendar/calendarView?startDateTime={2022-12-20T23:00:00.000Z}&endDateTime={2022-12-31T23:00:00.000Z}",
+  calendarView = "https://graph.microsoft.com/v1.0/me/calendars/{id}/calendarView",
 }
 
 interface MsGraphProps {
   accessToken: string | null;
   endpoint: GraphEndpoints;
+  urlVariables?: {
+    [key: string]: string | undefined;
+  };
+  params?: {
+    [key: string]: string;
+  };
 }
 
-export async function callMsGraph({ accessToken, endpoint }: MsGraphProps) {
+export async function callMsGraph({
+  accessToken,
+  endpoint,
+  urlVariables,
+  params,
+}: MsGraphProps) {
   const headers = new Headers();
   const bearer = `Bearer ${accessToken}`;
   headers.append("Authorization", bearer);
@@ -39,12 +50,40 @@ export async function callMsGraph({ accessToken, endpoint }: MsGraphProps) {
     headers: headers,
   };
 
-  return fetch(endpoint, options)
+  // if any value of url variables is undefined, return
+  if (
+    urlVariables &&
+    Object.keys(urlVariables).some((key) => urlVariables[key] === undefined)
+  )
+    return;
+
+  const endpointUrl = urlVariables
+    ? Object.keys(urlVariables).reduce(
+        // @ts-ignore
+        (acc, key) => acc.replace(`{${key}}`, urlVariables[key]),
+        endpoint
+      )
+    : endpoint;
+
+  const url = `${endpointUrl}${
+    params
+      ? `?${Object.keys(params)
+          .map((key) => `${key}=${params[key]}`)
+          .join("&")}`
+      : ``
+  }`;
+
+  return fetch(url, options)
     .then((response) => response.json())
     .catch((error) => console.log(error));
 }
 
-export function useMsGraph({ accessToken, endpoint }: MsGraphProps) {
+export function useMsGraph({
+  accessToken,
+  endpoint,
+  urlVariables,
+  params,
+}: MsGraphProps) {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -53,7 +92,7 @@ export function useMsGraph({ accessToken, endpoint }: MsGraphProps) {
     if (!accessToken) return;
     setLoading(true);
 
-    callMsGraph({ accessToken, endpoint })
+    callMsGraph({ accessToken, endpoint, urlVariables, params })
       .then((response) => {
         setData(response);
       })
@@ -63,6 +102,7 @@ export function useMsGraph({ accessToken, endpoint }: MsGraphProps) {
       .finally(() => {
         setLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken, endpoint]);
 
   return { data, error, loading };

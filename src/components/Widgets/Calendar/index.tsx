@@ -1,6 +1,8 @@
-import { Box, Button, Flex, Grid, Spinner } from "@chakra-ui/react";
+import { Box, Button, Flex, Grid, Spinner, Text } from "@chakra-ui/react";
+import { useCallback, useEffect, useState } from "react";
 import { CalendarType } from "../../../interfaces/msal";
 import {
+  callMsGraph,
   GraphEndpoints,
   useAccessToken,
   useMsalAuth,
@@ -10,23 +12,8 @@ import {
 export default function Calendar() {
   const accessToken = useAccessToken();
   const msalAuth = useMsalAuth();
-
-  const me = useMsGraph({
-    accessToken,
-    endpoint: GraphEndpoints.me,
-  });
-
-  const calendars = useMsGraph({
-    accessToken,
-    endpoint: GraphEndpoints.calendars,
-  });
-
-  const calendarView = useMsGraph({
-    accessToken,
-    endpoint: GraphEndpoints.calendarView,
-  });
-
-  console.log(calendarView);
+  const [calendars, setCalendars] = useState<any>();
+  const [calendarView, setCalendarView] = useState<any>();
 
   // current datetime
   const now = new Date();
@@ -36,7 +23,6 @@ export default function Calendar() {
     now.getMonth(),
     now.getDate()
   ).toISOString();
-  console.log("start", start);
 
   // end of the day
   const end = new Date(
@@ -44,21 +30,102 @@ export default function Calendar() {
     now.getMonth(),
     now.getDate() + 1
   ).toISOString();
-  console.log("end", end);
+
+  const fetchCalendarView = useCallback(
+    async (id: string) => {
+      const response = await callMsGraph({
+        accessToken,
+        endpoint: GraphEndpoints.calendarView,
+        urlVariables: {
+          id,
+        },
+        params: {
+          startDateTime: start,
+          endDateTime: end,
+        },
+      });
+
+      setCalendarView(response.value);
+    },
+    [accessToken, end, start]
+  );
+
+  useEffect(() => {
+    if (!accessToken) return;
+
+    callMsGraph({
+      accessToken,
+      endpoint: GraphEndpoints.calendars,
+    }).then((response) => {
+      console.log(response);
+
+      setCalendars(response.value);
+    });
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (!calendars) return;
+    if (!calendars.value) return;
+
+    fetchCalendarView(calendars.value[0].id);
+  }, [calendars, fetchCalendarView]);
 
   return (
     <Box p="2rem">
       {!msalAuth.isAuthenticated ? (
         <Button onClick={msalAuth.login}>Login</Button>
-      ) : calendars?.data?.value ? (
+      ) : calendars ? (
         <>
-          <Grid templateColumns="auto auto">
-            <Flex direction="column" textAlign="left" gap="1rem">
-              {calendars.data.value.map((calendar: CalendarType) => (
-                <Box
+          <Grid templateRows="auto auto" gap="1rem">
+            <Box maxH="20rem" overflow="auto">
+              {calendarView?.map((event: any) => {
+                const startDate = new Date(event.start.dateTime);
+                const endDate = new Date(event.end.dateTime);
+
+                return (
+                  <Box
+                    key={event.id}
+                    rounded="8px"
+                    bg="whiteAlpha.200"
+                    p="1rem"
+                    mb={
+                      calendarView.indexOf(event) === calendarView.length - 1
+                        ? 0
+                        : "1rem"
+                    }
+                  >
+                    <Text fontSize="1.25rem" fontWeight="bold">
+                      {event.subject}
+                    </Text>
+                    <Flex alignItems="center" gap=".5rem">
+                      <Text>
+                        {startDate.getHours()}:
+                        {("0" + startDate.getMinutes()).slice(-2)}
+                      </Text>
+                      <Text>-</Text>
+                      <Text>
+                        {endDate.getHours()}:
+                        {("0" + endDate.getMinutes()).slice(-2)}
+                      </Text>
+                    </Flex>
+                  </Box>
+                );
+              })}
+            </Box>
+
+            <Box
+              overflow="auto"
+              whiteSpace="nowrap"
+              w="25rem"
+              css={{
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+              }}
+            >
+              {calendars.map((calendar: CalendarType, index: number) => (
+                <Flex
                   key={calendar.id}
-                  px="1rem"
-                  py=".75rem"
                   bg="whiteAlpha.200"
                   rounded="8px"
                   cursor="pointer"
@@ -66,13 +133,18 @@ export default function Calendar() {
                   _active={{ bg: "whiteAlpha.400" }}
                   transition="background .1s ease-in-out"
                   maxW="14rem"
+                  px="1rem"
+                  py="0.75rem"
+                  display="inline-block"
+                  mr={index === calendars.length - 1 ? 0 : "1rem"}
+                  onClick={() => fetchCalendarView(calendar.id)}
                 >
                   {calendar.name}
-                </Box>
+                </Flex>
               ))}
-            </Flex>
+            </Box>
           </Grid>
-          <Button onClick={msalAuth.logout}>Logout</Button>
+          {/* <Button onClick={msalAuth.logout}>Logout</Button> */}
         </>
       ) : (
         <Spinner />
