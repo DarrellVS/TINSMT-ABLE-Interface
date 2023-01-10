@@ -5,7 +5,8 @@ export const msalConfig = {
   auth: {
     clientId: "9a730cca-abac-40e4-b94c-5df5c8e13243",
     authority: "https://login.microsoftonline.com/consumers",
-    redirectUri: "http://localhost:3000/",
+    redirectUri: "https://able.darrellvs.nl/microsoft/callback",
+    // redirectUri: "http://localhost:3000/microsoft/callback",
   },
   cache: {
     cacheLocation: "sessionStorage", // This configures where your cache will be stored
@@ -140,7 +141,7 @@ export function useMsalLogin() {
   const { instance } = useMsal();
 
   const msalLogin = useCallback(() => {
-    instance.loginPopup(loginRequest).catch((e) => {
+    instance.loginRedirect(loginRequest).catch((e) => {
       console.log(e);
     });
   }, [instance]);
@@ -154,7 +155,7 @@ export function useMsalLogout() {
   const msalLogout = useCallback(() => {
     instance.logoutPopup({
       postLogoutRedirectUri: "/",
-      mainWindowRedirectUri: "/", // redirects the top level app after logout
+      mainWindowRedirectUri: "/",
     });
   }, [instance]);
 
