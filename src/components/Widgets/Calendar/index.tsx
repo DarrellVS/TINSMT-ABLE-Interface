@@ -6,7 +6,6 @@ import {
   GraphEndpoints,
   useAccessToken,
   useMsalAuth,
-  useMsGraph,
 } from "../../../utils/msal";
 
 export default function Calendar() {
@@ -57,8 +56,6 @@ export default function Calendar() {
       accessToken,
       endpoint: GraphEndpoints.calendars,
     }).then((response) => {
-      console.log(response);
-
       setCalendars(response.value);
     });
   }, [accessToken]);
@@ -76,7 +73,24 @@ export default function Calendar() {
       ) : calendars ? (
         <>
           <Grid templateRows="auto auto" gap="1rem">
-            <Box maxH="20rem" overflow="auto">
+            <Box
+              maxH="20rem"
+              overflow="auto"
+              css={{
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+              }}
+            >
+              {calendarView ? (
+                calendarView.length === 0 && (
+                  <Text fontSize="1.25rem" fontWeight="bold">
+                    No events today!
+                  </Text>
+                )
+              ) : (
+                <Spinner />
+              )}
               {calendarView?.map((event: any) => {
                 const startDate = new Date(event.start.dateTime);
                 const endDate = new Date(event.end.dateTime);

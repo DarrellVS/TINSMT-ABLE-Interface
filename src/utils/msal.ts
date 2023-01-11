@@ -5,8 +5,8 @@ export const msalConfig = {
   auth: {
     clientId: "9a730cca-abac-40e4-b94c-5df5c8e13243",
     authority: "https://login.microsoftonline.com/consumers",
-    redirectUri: "https://able.darrellvs.nl/microsoft/callback",
-    // redirectUri: "http://localhost:3000/microsoft/callback",
+    // redirectUri: "https://able.darrellvs.nl/microsoft/callback",
+    redirectUri: "http://localhost:3000/microsoft/callback",
   },
   cache: {
     cacheLocation: "sessionStorage", // This configures where your cache will be stored
