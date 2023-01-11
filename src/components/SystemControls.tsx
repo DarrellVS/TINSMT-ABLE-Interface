@@ -38,6 +38,8 @@ export default function SystemControls() {
           px="1.25rem"
           py=".5rem"
           hasArrow
+          placement="left"
+          mr="2rem"
         >
           <IconButton
             icon={<BsFullscreen />}
