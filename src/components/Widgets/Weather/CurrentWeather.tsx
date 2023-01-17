@@ -12,7 +12,7 @@ export default function CurrentWeather({
   const max = Math.round(currentWeather.main.temp_max - 273.15);
 
   return (
-    <Flex justifyContent="space-between" gap="4rem">
+    <Flex justifyContent="space-between" gap="4rem" w="29rem">
       <Flex>
         <Image
           src={`http://openweathermap.org/img/wn/${currentWeather.weather[0].icon}@2x.png`}

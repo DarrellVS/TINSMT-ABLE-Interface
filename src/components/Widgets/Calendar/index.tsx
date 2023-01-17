@@ -69,7 +69,15 @@ export default function Calendar() {
   return (
     <Box p="2rem">
       {!msalAuth.isAuthenticated ? (
-        <Button onClick={msalAuth.login}>Login</Button>
+        <Button
+          colorScheme="green"
+          h="auto"
+          py="1rem"
+          px="2rem"
+          onClick={msalAuth.login}
+        >
+          Login with Microsoft
+        </Button>
       ) : calendars ? (
         <>
           <Grid templateRows="auto auto" gap="1rem">

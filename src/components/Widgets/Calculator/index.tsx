@@ -50,7 +50,7 @@ export default function Calculator() {
       <Grid
         templateColumns="1fr 1fr 1fr 1fr"
         templateRows="1fr 1fr 1fr 1fr"
-        w="20rem"
+        w="25rem"
         gap=".75rem"
       >
         <CalcButton label="C" onClick={handleClear} />

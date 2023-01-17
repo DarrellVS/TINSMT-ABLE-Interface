@@ -25,8 +25,13 @@ export default function Clock() {
   const year = date.getFullYear();
 
   return (
-    <Box p="3rem" pb="3rem">
-      <Flex justifyContent="space-between" alignItems="center" gap="3rem">
+    <Box p="4rem" pb="3rem">
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        gap="3rem"
+        w="21rem"
+      >
         <Flex
           direction="column"
           lineHeight="50px"

@@ -35,7 +35,7 @@ export default function Spotify() {
                 alt="Track image"
                 rounded="14px"
                 h="12rem"
-                w="25rem"
+                w="29rem"
                 objectFit="cover"
                 filter="brightness(0.4)"
               />
