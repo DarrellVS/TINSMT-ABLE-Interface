@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   basePath: "",
+  output: "standalone",
 };
 
 const withPWA = require("next-pwa")({
